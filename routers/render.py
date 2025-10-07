@@ -16,3 +16,8 @@ async def login(request: Request):
 @router.get("/about")
 async def about(request: Request):
     return template.TemplateResponse("about.html", {"request": request})
+
+@router.get("/info")
+async def info(request: Request):
+    return template.TemplateResponse("user_form.html", {"request": request})
+

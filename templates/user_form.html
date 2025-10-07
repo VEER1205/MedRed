@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedRed - User Information</title>
+    <link rel="stylesheet" href="/static/user_form.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">+</div>
+                <div class="logo-text">MedRed</div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="main-card">
+            <h1 class="page-title">User Information</h1>
+            <p class="page-subtitle">Complete your profile to get personalized medicine reminders</p>
+
+            <div class="profile-pic-section">
+                <div class="profile-pic">JD</div>
+                <div class="profile-pic-info">
+                    <h3>Profile Picture</h3>
+                    <p>Upload a photo to personalize your account</p>
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                        Upload Photo
+                    </button>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileUpload(event)">
+                </div>
+            </div>
+
+            <form id="userInfoForm">
+                <div class="section-title">Personal Information</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="John" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Doe" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" placeholder="john.doe@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dob">Date of Birth *</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gender *</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="male" name="gender" value="male" required>
+                                <label for="male">Male</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="female" name="gender" value="female">
+                                <label for="female">Female</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="other" name="gender" value="other">
+                                <label for="other">Other</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title">Address Information</div>
+
+                <div class="form-group full-width">
+                    <label for="address">Street Address *</label>
+                    <input type="text" id="address" name="address" placeholder="123 Main Street" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">City *</label>
+                        <input type="text" id="city" name="city" placeholder="Mumbai" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="state">State *</label>
+                        <input type="text" id="state" name="state" placeholder="Maharashtra" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pincode">PIN Code *</label>
+                        <input type="text" id="pincode" name="pincode" placeholder="400001" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="country">Country *</label>
+                        <select id="country" name="country" required>
+                            <option value="">Select Country</option>
+                            <option value="india" selected>India</option>
+                            <option value="usa">United States</option>
+                            <option value="uk">United Kingdom</option>
+                            <option value="canada">Canada</option>
+                            <option value="australia">Australia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="section-title">Medical Information</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bloodGroup">Blood Group</label>
+                        <select id="bloodGroup" name="bloodGroup">
+                            <option value="">Select Blood Group</option>
+                            <option value="a+">A+</option>
+                            <option value="a-">A-</option>
+                            <option value="b+">B+</option>
+                            <option value="b-">B-</option>
+                            <option value="ab+">AB+</option>
+                            <option value="ab-">AB-</option>
+                            <option value="o+">O+</option>
+                            <option value="o-">O-</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emergencyContact">Emergency Contact Number</label>
+                        <input type="tel" id="emergencyContact" name="emergencyContact" placeholder="+91 98765 43210">
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="allergies">Allergies</label>
+                    <textarea id="allergies" name="allergies" placeholder="List any known allergies to medications or other substances..."></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="conditions">Medical Conditions</label>
+                    <textarea id="conditions" name="conditions" placeholder="List any chronic conditions or ongoing medical treatments..."></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Information</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/user_form.js"></script>
+</body>
+</html>

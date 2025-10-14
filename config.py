@@ -3,16 +3,10 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Optional with default values
-    MONGO_URI: str = "mongodb://localhost:27017"
+    HOST_NAME: str = "localhost"
+    USER_NAME: str = "root"
+    USER_PASSWORD: str = "password"
     DB_NAME: str = "mydatabase"
-
-    # Required (no defaults)
-    API_KEY: str
-    SECRET_KEY: str
-    GOOGLE_CLIENT_ID: str
-    GOOGLE_CLIENT_SECRET: str
-    GOOGLE_REDIRECT_URI: str
-    SESSION_SECRET: str
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str
 

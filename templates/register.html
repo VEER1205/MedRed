@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedRed - Sign Up</title>
+    <link rel="stylesheet" href="/static/register.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo">
+                <div class="logo-icon">M</div>
+                <div class="logo-text">MedRed</div>
+            </div>
+            <p class="subtitle">Create Your MedRed Account</p>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        placeholder="John Doe" 
+                        required
+                    >
+                </div>
+                <div class="error-message">Please enter your full name</div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="you@example.com" 
+                        required
+                    >
+                </div>
+                <div class="error-message">Please enter a valid email address</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="••••••••" 
+                        required
+                    >
+                    <span class="password-toggle" id="togglePassword" title="Show Password">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </span>
+                </div>
+                <div class="password-strength">
+                    <div class="password-strength-bar"></div>
+                </div>
+                <div class="password-hint">Use at least 8 characters with letters and numbers</div>
+                <div class="error-message">Password must be at least 8 characters</div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        placeholder="••••••••" 
+                        required
+                    >
+                    <span class="password-toggle" id="toggleConfirmPassword" title="Show Password">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </span>
+                </div>
+                <div class="error-message">Passwords do not match</div>
+            </div>
+
+            <button type="submit" class="login-btn">
+                <span>Create Account</span>
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <div class="links">
+            <div>Already have an account? <a href="/login">Log in</a></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <div class="toast-icon">✓</div>
+        <div class="toast-message"></div>
+    </div>
+
+    <script src="/static/register.js"></script>
+</body>
+</html>

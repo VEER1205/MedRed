@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import render,auth
+from routers import render,auth, reminders
 from fastapi.staticfiles import StaticFiles
 
 
@@ -26,3 +26,4 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(render.router)  
 app.include_router(prefix="/api", router=auth.router)
+app.include_router(prefix="/api", router=reminders.router)

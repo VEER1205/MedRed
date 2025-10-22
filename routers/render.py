@@ -8,8 +8,10 @@ router = APIRouter()
 @router.get("/")
 async def home(request: Request):
     # Check if user is authenticated
+    user = None
     try:
         user = auth.getCurrentUserFromCookie(request.cookies.get("token"))
+        return template.TemplateResponse("index.html", {"request": request, "user": user["user"]})
     except Exception as e:
         print(e)
         user = None

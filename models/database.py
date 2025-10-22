@@ -73,6 +73,37 @@ def updateUser(
     except Exception as e:
         return {"error": str(e), "msg": "Failed to update user"}
 
+def createReminder(userId,medicineName,dosage,time):
+    try:
+        reminderId = str(uuid.uuid4())
+        query = "INSERT INTO remainders (reminderId, userId, medicineName, dosage, time) VALUES (%s, %s, %s, %s, %s)"
+        cus.execute(query, (reminderId, userId, medicineName, dosage, time))
+        conn.commit()
+        return {"msg": "Reminder created successfully"}
+    except Exception as e:
+        return {"error": str(e), "msg": "Failed to create reminder"}
+
+def getReminders(time):
+    query = "SELECT * FROM remainders WHERE time = %s"
+    cus.execute(query, (time,))
+    return cus.fetchall()
+
+def getUserReminders(userId):
+    query = "SELECT * FROM remainders WHERE userId = %s"
+    cus.execute(query, (userId,))
+    return cus.fetchall()
+
+def deleteReminder(reminderId):
+    try:
+        query = "DELETE FROM remainders WHERE reminderId = %s"
+        cus.execute(query, (reminderId,))
+        conn.commit()
+        return {"msg": "Reminder deleted successfully"}
+    except Exception as e:
+        return {"error": str(e), "msg": "Failed to delete reminder"}
+
+
+
 """
 userId VARCHAR(50) PRIMARY KEY,
   fname VARCHAR(50) NOT NULL,
@@ -90,4 +121,9 @@ userId VARCHAR(50) PRIMARY KEY,
   state VARCHAR(100),
   pinCode INT,
   country VARCHAR(100),
+
+  userId VARCHAR(50),
+  medicineName VARCHAR(100),
+  dosage VARCHAR(100),
+  time VARCHAR(100)
 """

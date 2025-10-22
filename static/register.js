@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
     formData.append("password", password.value);
     formData.append("username", nameInput.value);
 
-    fetch("http://localhost:8000/api/register", {
+    fetch("/api/register", {
       method: "POST",
       credentials: "include",
       headers: {

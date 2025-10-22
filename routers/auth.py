@@ -10,8 +10,10 @@ router = APIRouter()
 @router.post("/login")
 async def login(email: str = Form(...), password: str = Form(...)):
     user = db.getUser(email)
-    if not user or not verifyPassword(password, user["password"]):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="user not found")
+    if not verifyPassword(password, user["password"]):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="incorrect password")
     del user["password"]  # Remove password before creating token
     token = createAccessToken(data={"sub": user["userId"], "user": user}, expires_delta=None)
 
@@ -35,6 +37,7 @@ def register(username: str = Form(...), email: str = Form(...), password: str = 
         fname, lname = username.split(" ")
         hashed_password = auth.getPasswordHash(password)
         mess = db.createUser(fname, lname, email, hashed_password)
+        print(mess)
         token = createAccessToken(data={"sub": mess["userId"], "user": {"email": email, "fname": fname, "lname": lname}}, expires_delta=None)
         response = RedirectResponse(url="/info", status_code=302)
         response.set_cookie(

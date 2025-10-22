@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formData.append("email", emailInput.value);
     formData.append("password", passwordInput.value);
 
-    fetch("/api/login", {
+    fetch("https://medred.onrender.com/api/login", {
       method: "POST",
       credentials: "include", // Important for cookies
       headers: {

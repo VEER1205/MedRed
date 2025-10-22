@@ -35,7 +35,7 @@ def getCurrentUserFromCookie(access_token: str = Cookie(None)):
         raise HTTPException(status_code=401, detail="Not authenticated - No token provided")
     return verifyToken(access_token)
 
-pwd_context = CryptContext(schemes= ["bcrypt"],deprecated= "auto")
+pwd_context = CryptContext(schemes= ["argon2"],deprecated= "auto")
 def createAccessToken(data:dict,expires_delta: timedelta):
     to_encode = data.copy()
     if expires_delta:

@@ -55,7 +55,7 @@ def register(username: str = Form(...), email: str = Form(...), password: str = 
 @router.put("/updateUser/")
 async def updateUser(
     request: Request,
-    token: str = Cookie(None),
+    data = Depends(getCurrentUserFromCookie),
     mobileNumber: str = Form(...),
     emergencyContactNumber: str = Form(...),
     birthDate: str = Form(...),
@@ -70,19 +70,19 @@ async def updateUser(
     allergies: Optional[str] = Form("")  # Optional with default
 ):
     # Validate token first
-    if not token:
+    if not data:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="Not authenticated - No token provided"
         )
     
-    try:
-        data = getCurrentUserFromCookie(token)
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, 
-            detail=f"Invalid token: {str(e)}"
-        )
+    # try:
+    #     data = getCurrentUserFromCookie(token)
+    # except Exception as e:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED, 
+    #         detail=f"Invalid token: {str(e)}"
+    #     )
     
     user = data.get("user")
     sub = data.get("sub")

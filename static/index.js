@@ -1,5 +1,5 @@
 // API Configuration - Update these with your actual backend URLs
-const API_BASE_URL = "http://localhost:8000"; // Change this to your backend URL
+const API_BASE_URL = "/"; // Change this to your backend URL
 
 // Modal Functions
 function openModal(modalId) {

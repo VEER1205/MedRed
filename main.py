@@ -11,6 +11,7 @@ origins = [
     "http://localhost:5500",     # VSCode Live Server
     "http://127.0.0.1:5500",
     "http://localhost:8000",
+    "https://medred.onrender.com"
     "http://127.0.0.1:8000",
 ]
 

@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formData.append("email", emailInput.value);
     formData.append("password", passwordInput.value);
 
-    fetch("http://localhost:8000/api/login", {
+    fetch("/api/login", {
       method: "POST",
       credentials: "include", // Important for cookies
       headers: {

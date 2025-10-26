@@ -18,16 +18,19 @@ def createConnection():
         print(f"The error '{e}' occurred")
     return connection
 
-conn = createConnection()
-cus = conn.cursor(dictionary=True)
+
 
 def getUser(email):
+    conn = createConnection()
+    cus = conn.cursor(dictionary=True)
     query = "SELECT email,password,userId,fname,lname,password FROM USERS WHERE email = %s"
     cus.execute(query, (email,))
     return cus.fetchone()
 
 def getUserForDashboard(userId):
     try:
+        conn = createConnection()
+        cus = conn.cursor(dictionary=True)
         query = "SELECT * FROM USERS WHERE userId = %s"
         cus.execute(query, (userId,))
         user = cus.fetchone()
@@ -46,6 +49,8 @@ def getUserForDashboard(userId):
 
 def createUser(fname, lname, email, password):
     try:
+        conn = createConnection()
+        cus = conn.cursor()
         userId = str(uuid.uuid4())
         query = "INSERT INTO USERS(userId, fname, lname, email, password) VALUES (%s, %s, %s, %s, %s)"
         cus.execute(query, (userId, fname, lname, email, password))
@@ -71,6 +76,8 @@ def updateUser(
             medicalConditions=None,
             allergies=None):
     try:
+        conn = createConnection()
+        cus = conn.cursor()
         query = """
         UPDATE USERS 
         SET  medicalConditions = %s, bloodGroup = %s, allergies = %s, mobileNumber=%s,emergencyContactNumber=%s,birthDate=%s, gender = %s
@@ -93,6 +100,8 @@ def updateUser(
 
 def createReminder(userId,medicineName,dosage,time):
     try:
+        conn = createConnection()
+        cus = conn.cursor()
         reminderId = str(uuid.uuid4())
         query = "INSERT INTO remainders (reminderId, userId, medicineName, dosage, time) VALUES (%s, %s, %s, %s, %s)"
         cus.execute(query, (reminderId, userId, medicineName, dosage, time))
@@ -102,17 +111,29 @@ def createReminder(userId,medicineName,dosage,time):
         return {"error": str(e), "msg": "Failed to create reminder"}
 
 def getReminders(time):
-    query = "SELECT * FROM remainders WHERE time = %s"
-    cus.execute(query, (time,))
-    return cus.fetchall()
+    try:
+        conn = createConnection()
+        cus = conn.cursor()
+        query = "SELECT * FROM remainders WHERE time = %s"
+        cus.execute(query, (time,))
+        return cus.fetchall()
+    except Exception as e:
+        return {"error": str(e), "msg": "Failed to get reminders"}
 
 def getUserReminders(userId):
-    query = "SELECT * FROM remainders WHERE userId = %s"
-    cus.execute(query, (userId,))
-    return cus.fetchall()
+    try:
+        conn = createConnection()
+        cus = conn.cursor()
+        query = "SELECT * FROM remainders WHERE userId = %s"
+        cus.execute(query, (userId,))
+        return cus.fetchall()
+    except Exception as e:
+        return {"error": str(e), "msg": "Failed to get user reminders"}
 
 def deleteReminder(reminderId):
     try:
+        conn = createConnection()
+        cus = conn.cursor()
         query = "DELETE FROM remainders WHERE reminderId = %s"
         cus.execute(query, (reminderId,))
         conn.commit()
@@ -123,6 +144,8 @@ def deleteReminder(reminderId):
 def getUserById(userId):
     """Get user details by ID"""
     try:
+        conn = createConnection()
+        cus = conn.cursor()
         query = "SELECT userId, fname, lname, mobileNumber, email, bloodGroup, emergencyContactNumber, allergies, medicalConditions FROM USERS WHERE userId = %s"
         cus.execute(query, (userId,))
         result = cus.fetchone()
@@ -134,6 +157,8 @@ def getUserById(userId):
 def getReminderById(reminderId):
     """Get reminder details by ID"""
     try:
+        conn = createConnection()
+        cus = conn.cursor()
         query = "SELECT reminderId, userId, medicineName, dosage, time FROM remainders WHERE reminderId = %s"
         cus.execute(query, (reminderId,))
         result = cus.fetchone()
@@ -145,6 +170,8 @@ def getReminderById(reminderId):
 def updateReminder(reminderId, medicineName, dosage, time):
     """Update reminder"""
     try:
+        conn = createConnection()
+        cus = conn.cursor()
         query = "UPDATE remainders SET medicineName = %s, dosage = %s, time = %s WHERE reminderId = %s"
         cus.execute(query, (medicineName, dosage, time, reminderId))
         conn.commit()
@@ -157,6 +184,8 @@ def updateReminder(reminderId, medicineName, dosage, time):
 def getAllActiveReminders():
     """Get all active reminders with user phone numbers (for loading on startup)"""
     try:
+        conn = createConnection()
+        cus = conn.cursor(dictionary=True)
         query = """
         SELECT r.reminderId, r.userId, r.medicineName, r.dosage, r.time, u.mobileNumber
         FROM remainders r
@@ -173,6 +202,8 @@ def getAllActiveReminders():
 # Update createReminder to return reminderId
 def createReminder(userId, medicineName, dosage, time):
     try:
+        conn = createConnection()
+        cus = conn.cursor()
         reminderId = str(uuid.uuid4())
         query = "INSERT INTO remainders (reminderId, userId, medicineName, dosage, time) VALUES (%s, %s, %s, %s, %s)"
         cus.execute(query, (reminderId, userId, medicineName, dosage, time))

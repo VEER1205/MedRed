@@ -48,9 +48,9 @@ app.include_router(prefix="/api", router=auth.router)
 app.include_router(prefix="/api/reminders", router=reminders.router)
 
 # Health check endpoint
-@app.get("/health")
+@app.api_route("/health",methods=["GET","HEAD"])
 async def health_check():
     return {
-        "status": "healthy",
+        "status": "ok",
         "message": "MedRed API is running"
     }

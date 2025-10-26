@@ -27,9 +27,21 @@ def getUser(email):
     return cus.fetchone()
 
 def getUserForDashboard(userId):
-    query = "SELECT * FROM USERS WHERE userId = %s"
-    cus.execute(query, (userId,))
-    return cus.fetchone()
+    try:
+        query = "SELECT * FROM USERS WHERE userId = %s"
+        cus.execute(query, (userId,))
+        user = cus.fetchone()
+        
+        query2 = "SELECT * FROM ADDRESS WHERE userId = %s"
+        cus.execute(query2, (userId,))
+        address = cus.fetchone()
+    
+        query3 = "SELECT * FROM remainders WHERE userId = %s"
+        cus.execute(query3, (userId,))
+        reminders = cus.fetchall()
+        return {"user": user, "address": address, "reminders": reminders}
+    except Exception as e:
+        return {"error from database": str(e)}
 
 def createUser(fname, lname, email, password):
     try:
@@ -41,7 +53,7 @@ def createUser(fname, lname, email, password):
         # Return userId along with success message
         return {"msg": "User created successfully", "userId": userId}
     except Exception as e:
-        return {"error": str(e), "msg": "Failed to create user"}
+        return {"error from database": str(e), "msg": "Failed to create user"}
 
 def updateUser(
             userId,

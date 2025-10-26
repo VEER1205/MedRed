@@ -159,6 +159,30 @@ async def updateUser(
         )
 
 
+@router.get("/info")
+async def getUserInfo(token: str = Cookie(None)):
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Not authenticated - No token provided"
+        )
+    
+    try:
+        data = getCurrentUserFromCookie(token)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail=f"Invalid token: {str(e)}"
+        )
+    
+    userId = data.get("sub")    
+    if not userId:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Not authenticated - Invalid user data"
+        )
+    user_info = db.getUserForDashboard(userId)
+    return user_info
 @router.get("/me")
 async def get_me(token: str = Cookie(None)):
     if not token:
@@ -187,3 +211,10 @@ async def get_me(token: str = Cookie(None)):
         "fname": user.get("fname"),
         "lname": user.get("lname"),
     }
+
+@router.get("/logout")
+async def logout():
+    response = RedirectResponse(url="/", status_code=302)
+    response.delete_cookie(key="token")
+    return response
+

@@ -12,7 +12,7 @@ const userData = {
   medicalConditions: "Hypertension",
   birthDate: "1990-01-15",
 };
-console.log({userData});
+
 
 const addressData = {
   streetAddress: "123 Medical Street",

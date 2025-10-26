@@ -1,4 +1,5 @@
 from twilio.rest import Client
+from twilio.twiml.voice_response import VoiceResponse
 from twilio.base.exceptions import TwilioRestException
 import os
 from config import Settings
@@ -98,6 +99,66 @@ Don't forget to take your medicine!
                 "success": False,
                 "error": str(e)
             }
+    
+    def make_call(self, to_phone: str, message: str) -> dict:
+   
+        if not self.client:
+            return {"success": False, "error": "Twilio not configured"}
+
+        try:
+            # Ensure phone number has country code
+            if not to_phone.startswith('+'):
+                to_phone = '+91' + to_phone.replace(' ', '')
+
+            # Make call using TwiML
+            call = self.client.calls.create(
+                to=to_phone,
+                from_=self.twilio_phone,
+                twiml=f'<Response><Say voice="alice">{message}</Say></Response>'
+            )
+
+            print(f"✅ Call initiated! SID: {call.sid}")
+            return {
+                "success": True,
+                "sid": call.sid,
+                "to": to_phone
+            }
+        except TwilioRestException as e:
+            print(f"❌ Twilio Error: {e.msg}")
+            return {"success": False, "error": str(e), "code": e.code}
+        except Exception as e:
+            print(f"❌ Error making call: {e}")
+            return {"success": False, "error": str(e)}
+
+    def send_medicine_reminder_call(self, to_phone: str, medicine_name: str, dosage: str, time: str) -> dict:
+        if not self.client:
+            return {"success": False, "error": "Twilio not configured"}
+    
+        try:
+            if not to_phone.startswith('+'):
+                to_phone = '+91' + to_phone.replace(' ', '')
+
+        # Create a TwiML response
+            response = VoiceResponse()
+            response.say(
+                f"Hello! This is your medicine reminder. "
+                f"Please take {medicine_name}, dosage {dosage}, at {time}.",
+                voice="alice"
+            )
+
+            # Make the call
+            call = self.client.calls.create(
+                twiml=response,
+                to=to_phone,
+                from_=self.twilio_phone
+            )
+
+            return {"success": True, "sid": call.sid, "status": call.status, "to": to_phone}
+
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+
 
 # Create singleton instance
 twilio_service = TwilioService()

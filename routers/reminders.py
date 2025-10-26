@@ -215,6 +215,13 @@ async def update_reminder(
                     to_phone=str(user_details["mobileNumber"]),
                     message=f"✏️ Reminder updated!\n\nMedicine: {reminder.medicineName}\nDosage: {reminder.dosage}\nNew time: {reminder.time}"
                 )
+
+                twilio_service.send_medicine_reminder_call(
+                    to_phone=str(user_details["mobileNumber"]),
+                    medicine_name=reminder.medicineName,
+                    dosage=reminder.dosage,
+                    time=reminder.time
+            )
             except Exception as sms_error:
                 print(f"⚠️ SMS rescheduling failed: {sms_error}")
         

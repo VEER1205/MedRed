@@ -20,30 +20,40 @@ def shutdown_scheduler():
         print("⏹️ Scheduler stopped!")
 
 def send_reminder_notification(user_id: str, user_phone: str, medicine_name: str, 
-                               dosage: str, time: str):
+                               dosage: str, time: str, send_sms=True, send_call=True):
     """
-    Send reminder notification via SMS
+    Send reminder notification via SMS and/or Call
     """
     print(f"🔔 Sending reminder to user {user_id}: {medicine_name} - {dosage}")
-    
+    results = {}
+
     try:
-        # Send SMS via Twilio
-        result = twilio_service.send_medicine_reminder(
-            to_phone=user_phone,
-            medicine_name=medicine_name,
-            dosage=dosage,
-            time=time
-        )
-        
-        if result['success']:
-            print(f"✅ SMS sent successfully to {user_phone}")
-        else:
-            print(f"❌ Failed to send SMS: {result.get('error')}")
-        
-        return result
+        if send_sms:
+            sms_result = twilio_service.send_medicine_reminder(
+                to_phone=user_phone,
+                medicine_name=medicine_name,
+                dosage=dosage,
+                time=time
+            )
+            results['sms'] = sms_result
+            print(f"✅ SMS result: {sms_result}")
+
+        if send_call:
+            call_result = twilio_service.send_medicine_reminder_call(
+                to_phone=user_phone,
+                medicine_name=medicine_name,
+                dosage=dosage,
+                time=time
+            )
+            results['call'] = call_result
+            print(f"✅ Call result: {call_result}")
+
+        return results
+
     except Exception as e:
-        print(f"❌ Error in send_reminder_notification: {e}")
+        print(f"❌ Error sending reminder: {e}")
         return {"success": False, "error": str(e)}
+
 
 def schedule_multiple_times_reminder(reminder_id: str, user_id: str, user_phone: str,
                                      medicine_name: str, dosage: str, times_list: list):

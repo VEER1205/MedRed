@@ -11,7 +11,8 @@ def createConnection():
             user=settings.USER_NAME,
             password=settings.USER_PASSWORD,
             database=settings.DB_NAME,
-            port = 4000
+            port = 4000,
+            ssl_disabled=False
         )
         print("Connection to MySQL DB successful")
     except connector.Error as e:

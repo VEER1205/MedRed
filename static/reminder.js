@@ -1,9 +1,28 @@
 // User data from backend
-const userData = {
-  fname: "John",
-  lname: "Doe",
-  email: "john.doe@example.com",
-};
+let userData = {};
+
+// Fetch user data
+async function getUserData() {
+  try {
+    const response = await fetch('/api/me', {
+      method: 'GET',
+      credentials: 'include',
+    });
+    const data = await response.json();
+    userData = data;
+    console.log("User Data:", userData);
+    
+    // Update UI with user data
+    if (userData.fname && userData.lname) {
+      const initials = userData.fname.charAt(0) + userData.lname.charAt(0);
+      document.getElementById("navUserAvatar").textContent = initials.toUpperCase();
+      document.getElementById("navUserName").textContent = `${userData.fname} ${userData.lname}`;
+      document.getElementById("navUserEmail").textContent = userData.email;
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+}
 
 // Reminders array
 let reminders = [];
@@ -29,13 +48,10 @@ function fetchReminders() {
 }
 
 // Initialize page
-function initializePage() {
-  // Set user info in navbar
-  const initials = userData.fname.charAt(0) + userData.lname.charAt(0);
-  document.getElementById("navUserAvatar").textContent = initials.toUpperCase();
-  document.getElementById("navUserName").textContent = `${userData.fname} ${userData.lname}`;
-  document.getElementById("navUserEmail").textContent = userData.email;
-
+async function initializePage() {
+  // Get user data first
+  await getUserData();
+  
   // Load reminders from backend
   fetchReminders();
 }
@@ -170,6 +186,8 @@ function addReminder(event) {
     submitButton.textContent = "Saving...";
   }
 
+  console.log("Submitting reminder:", reminderData); // Debug log
+
   fetch('/api/reminders/add', {
     method: 'POST',
     headers: {
@@ -179,16 +197,21 @@ function addReminder(event) {
     body: JSON.stringify(reminderData),
   })
     .then(response => {
+      console.log("Response status:", response.status); // Debug log
       if (!response.ok) {
         throw new Error('Failed to add reminder');
       }
       return response.json();
     })
     .then(data => {
-      console.log("Reminder added:", data);
+      console.log("Reminder added successfully:", data);
       closeAddModal();
       showSuccess("✓ Reminder added successfully!");
-      fetchReminders(); // Refresh the list from backend
+      
+      // Wait a bit before fetching to ensure backend has processed
+      setTimeout(() => {
+        fetchReminders();
+      }, 300);
     })
     .catch(error => {
       console.error("Error adding reminder:", error);
@@ -251,16 +274,16 @@ function showSuccess(message) {
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", function() {
+  console.log("DOM loaded, initializing page..."); // Debug log
+  
   // Initialize page
   initializePage();
 
-  // Form submit listener - use once to prevent duplicate listeners
+  // Form submit listener
   const reminderForm = document.getElementById("reminderForm");
   if (reminderForm) {
-    // Remove any existing listeners first
-    reminderForm.onsubmit = null;
-    // Add single event listener
-    reminderForm.addEventListener("submit", addReminder, { once: false });
+    console.log("Form found, attaching listener"); // Debug log
+    reminderForm.addEventListener("submit", addReminder);
   }
 
   // Close modal on outside click

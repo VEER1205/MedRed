@@ -2,12 +2,8 @@ from fastapi import APIRouter, Request, HTTPException, Depends, Cookie
 from starlette.config import Config
 from jose import jwt
 from passlib.context import CryptContext    
-# from app.crud import user_crud
 from config import settings
 from datetime import datetime, timedelta
-
-
-
 from jose import jwt
 from config import settings
 
@@ -27,15 +23,13 @@ def verifyToken(token: str):
         raise HTTPException(status_code=401, detail="Token expired")
     except jwt.JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
-
-
     
 def getCurrentUserFromCookie(access_token: str = Cookie(None)):
     if not access_token:
         raise HTTPException(status_code=401, detail="Not authenticated - No token provided")
     return verifyToken(access_token)
 
-pwd_context = CryptContext(schemes= ["argon2"],deprecated= "auto")
+pwd_context = CryptContext(schemes= ["bcrypt"],deprecated= "auto")
 def createAccessToken(data:dict,expires_delta: timedelta):
     to_encode = data.copy()
     if expires_delta:

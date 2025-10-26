@@ -26,6 +26,11 @@ def getUser(email):
     cus.execute(query, (email,))
     return cus.fetchone()
 
+def getUserForDashboard(userId):
+    query = "SELECT * FROM USERS WHERE userId = %s"
+    cus.execute(query, (userId,))
+    return cus.fetchone()
+
 def createUser(fname, lname, email, password):
     try:
         userId = str(uuid.uuid4())

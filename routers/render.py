@@ -38,3 +38,22 @@ async def info(request: Request):
         return template.TemplateResponse("login.html", {"request": request, "error": "Please log in to access this page."})
     return template.TemplateResponse("user_form.html", {"request": request, "user": user})
 
+@router.get("/Dashboard")
+async def dashboard(request: Request):
+    try:
+        user = auth.getCurrentUserFromCookie(request.cookies.get("token"))
+        
+    except Exception as e:
+        print(e)
+        return template.TemplateResponse("login.html", {"request": request, "error": "Please log in to access this page."})
+    return template.TemplateResponse("dashboard.html", {"request": request, "user": user})
+
+@router.get("/Reminders")
+async def reminders(request: Request):
+    try:
+        user = auth.getCurrentUserFromCookie(request.cookies.get("token"))
+    except Exception as e:
+        print(e)
+        return template.TemplateResponse("login.html", {"request": request, "error": "Please log in to access this page."})
+    return template.TemplateResponse("reminder.html", {"request": request, "user": user})
+

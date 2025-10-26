@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedRed - Medicine Reminders</title>
+    <link rel="stylesheet" href="/static/reminder.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="navbar-brand">
+                <div class="navbar-logo">+</div>
+                <div class="navbar-text">MedRed</div>
+            </a>
+
+            <ul class="navbar-menu">
+                <li class="navbar-item">
+                    <a href="/" class="navbar-link">
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="navbar-item">
+                    <a href="/Dashboard" class="navbar-link">
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="navbar-item">
+                    <a href="/Reminders" class="navbar-link active">
+                        <span>Reminders</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="navbar-user" id="navbarUser">
+                <div class="user-avatar" id="navUserAvatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name" id="navUserName">John Doe</div>
+                    <div class="user-email" id="navUserEmail">john@example.com</div>
+                </div>
+            </div>
+
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Medicine Reminders</h1>
+            <p class="page-subtitle">Manage your daily medication schedule</p>
+        </div>
+
+        <div class="content-wrapper">
+            <!-- Reminders List -->
+            <div class="main-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <div class="section-icon">💊</div>
+                        <span>Your Reminders</span>
+                    </h2>
+                    <button class="btn btn-primary" onclick="openAddModal()">
+                        <span>+</span>
+                        <span>Add Reminder</span>
+                    </button>
+                </div>
+
+                <div class="reminder-list" id="reminderList">
+                    <!-- Reminders will be populated here -->
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Total Reminders Card -->
+                <div class="info-card">
+                    <div class="info-card-title">Total Reminders</div>
+                    <div class="info-card-value" id="totalReminders">0</div>
+                </div>
+
+                <!-- Statistics Card -->
+                <div class="info-card">
+                    <div class="info-card-title">Today's Schedule</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">☀️ Morning</span>
+                            <span class="stat-value" id="morningCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">🌤️ Afternoon</span>
+                            <span class="stat-value" id="afternoonCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">🌆 Evening</span>
+                            <span class="stat-value" id="eveningCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">🌙 Night</span>
+                            <span class="stat-value" id="nightCount">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Reminder Modal -->
+    <div class="modal" id="addReminderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <span>💊</span>
+                    <span>Add New Reminder</span>
+                </h3>
+                <button class="close-btn" onclick="closeAddModal()">&times;</button>
+            </div>
+
+            <form id="reminderForm" onsubmit="addReminder(event)">
+                <div class="form-group">
+                    <label>Medicine Name *</label>
+                    <input type="text" id="medicineName" placeholder="e.g., Aspirin" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Dosage *</label>
+                    <input type="text" id="dosage" placeholder="e.g., 500mg, 2 tablets" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Frequency *</label>
+                    <select id="frequency" required>
+                        <option value="">Select Frequency</option>
+                        <option value="Once Daily">Once Daily</option>
+                        <option value="Twice Daily">Twice Daily</option>
+                        <option value="Three Times Daily">Three Times Daily</option>
+                        <option value="Four Times Daily">Four Times Daily</option>
+                        <option value="As Needed">As Needed</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Time(s) *</label>
+                    <div class="time-inputs" id="timeInputs">
+                        <input type="time" class="time-input" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Duration</label>
+                    <input type="text" id="duration" placeholder="e.g., 7 days, 2 weeks">
+                </div>
+
+                <div class="form-group">
+                    <label>Instructions</label>
+                    <textarea id="instructions" rows="3" placeholder="e.g., Take with food, Avoid alcohol"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span>+</span>
+                        <span>Add Reminder</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        <div class="success-icon">✓</div>
+        <span id="successText"></span>
+    </div>
+
+    <script src="/static/reminder.js"></script>
+</body>
+</html>

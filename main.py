@@ -27,4 +27,4 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(render.router)  
 app.include_router(prefix="/api", router=auth.router)
-app.include_router(prefix="/api", router=reminders.router)
+app.include_router(prefix="/api/reminders",router=reminders.router)

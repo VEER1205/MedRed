@@ -88,19 +88,19 @@
                     <div class="info-card-title">Today's Schedule</div>
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <span class="stat-label">☀️ Morning</span>
+                            <span class="stat-label"> Morning</span>
                             <span class="stat-value" id="morningCount">0</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">🌤️ Afternoon</span>
+                            <span class="stat-label"> Afternoon</span>
                             <span class="stat-value" id="afternoonCount">0</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">🌆 Evening</span>
+                            <span class="stat-label"> Evening</span>
                             <span class="stat-value" id="eveningCount">0</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">🌙 Night</span>
+                            <span class="stat-label"> Night</span>
                             <span class="stat-value" id="nightCount">0</span>
                         </div>
                     </div>
@@ -114,7 +114,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">
-                    <span>💊</span>
                     <span>Add New Reminder</span>
                 </h3>
                 <button class="close-btn" onclick="closeAddModal()">&times;</button>
@@ -132,32 +131,10 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Frequency *</label>
-                    <select id="frequency" required>
-                        <option value="">Select Frequency</option>
-                        <option value="Once Daily">Once Daily</option>
-                        <option value="Twice Daily">Twice Daily</option>
-                        <option value="Three Times Daily">Three Times Daily</option>
-                        <option value="Four Times Daily">Four Times Daily</option>
-                        <option value="As Needed">As Needed</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
                     <label>Time(s) *</label>
                     <div class="time-inputs" id="timeInputs">
                         <input type="time" class="time-input" required>
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Duration</label>
-                    <input type="text" id="duration" placeholder="e.g., 7 days, 2 weeks">
-                </div>
-
-                <div class="form-group">
-                    <label>Instructions</label>
-                    <textarea id="instructions" rows="3" placeholder="e.g., Take with food, Avoid alcohol"></textarea>
                 </div>
 
                 <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px;">

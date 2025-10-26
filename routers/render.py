@@ -3,7 +3,7 @@ from controller import auth
 from fastapi.templating import Jinja2Templates
 
 template = Jinja2Templates(directory="templates")
-router = APIRouter()
+router = APIRouter(tags=["render"])
 
 @router.get("/")
 async def home(request: Request):
@@ -24,10 +24,6 @@ async def login(request: Request):
 @router.get("/register")
 async def register(request: Request):
     return template.TemplateResponse("register.html", {"request": request})
-
-@router.get("/about")
-async def about(request: Request):
-    return template.TemplateResponse("about.html", {"request": request})
 
 @router.get("/info")
 async def info(request: Request):

@@ -5,7 +5,7 @@ from models import database as db
 from controller import auth
 from typing import Optional
 
-router = APIRouter()
+router = APIRouter(tags=["auth"])
 
 @router.post("/login")
 async def login(email: str = Form(...), password: str = Form(...)):

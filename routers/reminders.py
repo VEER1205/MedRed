@@ -1,31 +1,36 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status, Response, Cookie, Form, Body
-from fastapi.responses import RedirectResponse
-from controller.auth import verifyPassword, createAccessToken, getCurrentUserFromCookie
+from fastapi import APIRouter, Cookie, Body
+from controller.auth import getCurrentUserFromCookie
 from models import database as db
 import datetime
+from pydantic import BaseModel
 
+router = APIRouter(tags=["reminders"])
 
-router = APIRouter()
+# Define request model
+class ReminderRequest(BaseModel):
+    medicineName: str
+    dosage: str
+    time: str
 
-@router.get("/reminders/")
+@router.get("/")
 async def get_reminders():
     time = datetime.datetime.now().strftime("%H:%M")
     reminder = db.getReminders(time)
     return {"reminders": reminder}
 
-@router.post("/reminders/add")
-async def add_reminder(medicineName: str, dosage: str, time: str,token: str = Cookie(None)):
+@router.post("/add")
+async def add_reminder(reminder: ReminderRequest, token: str = Cookie(None)):
     user = getCurrentUserFromCookie(token)
-    mess =  db.createReminder(user["sub"], medicineName, dosage, time)
+    mess = db.createReminder(user["sub"], reminder.medicineName, reminder.dosage, reminder.time)
     return mess
 
-@router.get("/reminders/user")
+@router.get("/user")
 async def get_user_reminders(token: str = Cookie(None)):
     user = getCurrentUserFromCookie(token)
     reminders = db.getUserReminders(user["sub"])
     return {"reminders": reminders}
 
-@router.delete("/reminders/delete/{reminderId}")
+@router.delete("/delete/{reminderId}")
 async def delete_reminder(reminderId: str, token: str = Cookie(None)):
     user = getCurrentUserFromCookie(token)
     mess = db.deleteReminder(reminderId)

@@ -31,7 +31,8 @@ def getUserForDashboard(userId):
         query = "SELECT * FROM USERS WHERE userId = %s"
         cus.execute(query, (userId,))
         user = cus.fetchone()
-        
+        user.pop("password", None)  # Remove password field
+
         query2 = "SELECT * FROM ADDRESS WHERE userId = %s"
         cus.execute(query2, (userId,))
         address = cus.fetchone()

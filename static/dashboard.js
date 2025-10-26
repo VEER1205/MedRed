@@ -1,32 +1,22 @@
 // Sample data from backend (replace with actual API calls)
-const userData = {
-  userId: 1,
-  fname: "John",
-  lname: "Doe",
-  mobileNumber: "+91 9876543210",
-  email: "john.doe@example.com",
-  gender: "Male",
-  bloodGroup: "O+",
-  emergencyContactNumber: "+91 9123456789",
-  allergies: "Penicillin",
-  medicalConditions: "Hypertension",
-  birthDate: "1990-01-15",
-};
 
-
-const addressData = {
-  streetAddress: "123 Medical Street",
-  city: "Mumbai",
-  state: "Maharashtra",
-  pinCode: "400001",
-  country: "India",
-};
-
-const reminders = [
-  { reminderId: 1, medicineName: "Aspirin", dosage: "500mg", time: "08:00" },
-  { reminderId: 2, medicineName: "Metformin", dosage: "850mg", time: "14:00" },
-  { reminderId: 3, medicineName: "Lisinopril", dosage: "10mg", time: "20:00" },
-];
+fetch('/api/info', {
+            method: 'GET',
+            credentials: 'include',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error fetching user info:', data.error);
+            } else {
+                console.log('User info fetched successfully:', data);
+                userData = data.user;
+                reminders = data.reminders;
+                addressData = data.address;
+                initializeDashboard();
+            }
+        })
+        .catch(error => console.error('Error fetching data:', error));
 
 // Initialize dashboard
 function initializeDashboard() {

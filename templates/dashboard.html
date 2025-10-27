@@ -10,33 +10,29 @@
     <!-- Navbar -->
     <nav class="navbar">
       <div class="navbar-container">
-        <a href="#" class="navbar-brand">
-          <svg viewBox="0 0 24 24">
-            <defs>
-              <linearGradient
-                id="logoGradient"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="100%"
-              >
-                <stop offset="0%" style="stop-color: #dc2626" />
-                <stop offset="100%" style="stop-color: #b91c1c" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1 16h2v-6h-2v6zm0-8h2V6h-2v4z"
-            />
-          </svg>
+        <a href="/" class="navbar-brand">
+          <div class="navbar-logo">
+            <svg viewBox="0 0 24 24">
+              <defs>
+                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color: #dc2626" />
+                  <stop offset="100%" style="stop-color: #b91c1c" />
+                </linearGradient>
+              </defs>
+              <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1 16h2v-6h-2v6zm0-8h2V6h-2v4z" />
+            </svg>
+          </div>
           <div class="navbar-text">MedRed</div>
         </a>
 
         <ul class="navbar-menu">
-          <a href="/" class="navbar-link">
-            <span>Home</span>
-          </a>
           <li>
-            <a href="#" class="navbar-link active">
+            <a href="/" class="navbar-link">
+              <span>Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="/Dashboard" class="navbar-link active">
               <span>Dashboard</span>
             </a>
           </li>
@@ -54,6 +50,12 @@
             <div class="user-email" id="navUserEmail">john@example.com</div>
           </div>
         </div>
+        
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
     </nav>
 
@@ -61,26 +63,14 @@
     <div class="container">
       <!-- Welcome Section -->
       <div class="welcome-section">
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-          "
-        >
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
           <div>
             <h1 class="welcome-title">
-              Welcome back, <span id="welcomeName">John</span>! 👋
+              Welcome back, <span id="welcomeName">John</span>!
             </h1>
             <p class="welcome-subtitle">Here's your health overview</p>
           </div>
-          <button
-            class="btn btn-primary"
-            onclick="window.location.href='/info'"
-            style="padding: 14px 28px; font-size: 15px"
-          >
+          <button class="btn btn-primary" onclick="window.location.href='/info'" style="padding: 14px 28px; font-size: 15px">
             <span>✏️</span>
             <span>Edit Profile</span>
           </button>
@@ -93,34 +83,39 @@
         <div class="card">
           <div class="card-header">
             <h2 class="card-title">
-              <div class="title-icon">👤</div>
+              <div class="title-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
               <span>Personal Information</span>
             </h2>
           </div>
 
           <div class="info-grid">
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">📱</span> Mobile</span
-              >
+              <span class="info-label">
+                <span class="info-icon">📱</span> Mobile
+              </span>
               <span class="info-value" id="mobileNumber">+91 9876543210</span>
             </div>
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">⚧</span> Gender</span
-              >
+              <span class="info-label">
+                <span class="info-icon">⚧</span> Gender
+              </span>
               <span class="info-value" id="gender">Male</span>
             </div>
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">🎂</span> Birth Date</span
-              >
+              <span class="info-label">
+                <span class="info-icon">📅</span> Birth Date
+              </span>
               <span class="info-value" id="birthDate">Jan 15, 1990</span>
             </div>
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">🩸</span> Blood Group</span
-              >
+              <span class="info-label">
+                <span class="info-icon">🩸</span> Blood Group
+              </span>
               <span class="info-value" id="bloodGroup">O+</span>
             </div>
           </div>
@@ -129,39 +124,44 @@
         <!-- Address Information -->
         <div class="card">
           <h2 class="card-title" style="margin-bottom: 24px">
-            <div class="title-icon">📍</div>
+            <div class="title-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </div>
             <span>Address</span>
           </h2>
 
           <div class="info-grid">
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">🏠</span> Street</span
-              >
+              <span class="info-label">
+                <span class="info-icon">🏠</span> Street
+              </span>
               <span class="info-value" id="streetAddress">123 Medical St</span>
             </div>
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">🏙️</span> City</span
-              >
+              <span class="info-label">
+                <span class="info-icon">🏙️</span> City
+              </span>
               <span class="info-value" id="city">Mumbai</span>
             </div>
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">📍</span> State</span
-              >
+              <span class="info-label">
+                <span class="info-icon">📍</span> State
+              </span>
               <span class="info-value" id="state">Maharashtra</span>
             </div>
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">📮</span> PIN Code</span
-              >
+              <span class="info-label">
+                <span class="info-icon">📮</span> PIN Code
+              </span>
               <span class="info-value" id="pinCode">400001</span>
             </div>
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">🌍</span> Country</span
-              >
+              <span class="info-label">
+                <span class="info-icon">🌍</span> Country
+              </span>
               <span class="info-value" id="country">India</span>
             </div>
           </div>
@@ -170,32 +170,32 @@
         <!-- Medical Information -->
         <div class="card">
           <h2 class="card-title" style="margin-bottom: 24px">
-            <div class="title-icon">🏥</div>
+            <div class="title-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+            </div>
             <span>Medical Information</span>
           </h2>
 
           <div class="info-grid">
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">🚨</span> Emergency Contact</span
-              >
-              <span class="info-value" id="emergencyContact"
-                >+91 9123456789</span
-              >
+              <span class="info-label">
+                <span class="info-icon">🚨</span> Emergency Contact
+              </span>
+              <span class="info-value" id="emergencyContact">+91 9123456789</span>
             </div>
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">⚠️</span> Allergies</span
-              >
+              <span class="info-label">
+                <span class="info-icon">⚠️</span> Allergies
+              </span>
               <span class="info-value" id="allergies">Penicillin</span>
             </div>
             <div class="info-row">
-              <span class="info-label"
-                ><span class="info-icon">🩺</span> Medical Conditions</span
-              >
-              <span class="info-value" id="medicalConditions"
-                >Hypertension</span
-              >
+              <span class="info-label">
+                <span class="info-icon">🩺</span> Medical Conditions
+              </span>
+              <span class="info-value" id="medicalConditions">Hypertension</span>
             </div>
           </div>
         </div>
@@ -204,7 +204,14 @@
         <div class="card">
           <div class="card-header">
             <h2 class="card-title">
-              <div class="title-icon">💊</div>
+              <div class="title-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              </div>
               <span>Today's Reminders</span>
               <span class="badge" id="reminderCount">3</span>
             </h2>

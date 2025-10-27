@@ -104,13 +104,12 @@ function loadReminders() {
 
 // Action functions
 function editProfile() {
-  alert("Redirecting to edit profile...");
+  window.location.href = '/info';
   // window.location.href = '/edit-profile.html';
 }
 
 function addReminder() {
-  alert("Redirecting to add reminder...");
-  // window.location.href = '/reminders.html';
+  window.location.href = '/reminders';
 }
 
 // Initialize on page load

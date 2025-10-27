@@ -84,14 +84,15 @@ def updateUser(
         WHERE userId = %s
         """
         cus.execute(query, (medicalConditions, bloodGroup, allergies, mobileNumber, emergencyContactNumber, birthDate, gender, userId))
-        conn.commit()
+       
         print("User table updated")
         query2 = """
-        UPDATE ADDRESS
-        SET streetAddress = %s, city = %s, state = %s, pinCode = %s, country = %s
-        WHERE userId = %s
+        insert into ADDRESS (streetAddress, city, state, pinCode, country, userId)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE
+        streetAddress = %s, city = %s, state = %s, pinCode = %s, country = %s
         """
-        cus.execute(query2, (streetAddress, city, state, pinCode, country, userId))
+        cus.execute(query2, (streetAddress, city, state, pinCode, country, userId, streetAddress, city, state, pinCode, country))
         conn.commit()
         print("Address table updated")
         return {"msg": "User updated successfully"}

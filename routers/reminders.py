@@ -75,11 +75,11 @@ async def add_reminder(reminder: ReminderRequest, token: str = Cookie(None)):
             reminder.dosage,
             reminder.time
         )
-        
-        if not result.get("success"):
+        print(f"Create reminder result: {result}")
+        if not result["success"]:
             raise HTTPException(status_code=500, detail=result.get("msg", "Failed to create reminder"))
         
-        reminder_id = result.get("reminderId")
+        reminder_id = result["reminderId"]
         
         # Schedule SMS if phone number exists
         job_ids = []
@@ -116,7 +116,7 @@ async def add_reminder(reminder: ReminderRequest, token: str = Cookie(None)):
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Error adding reminder: {e}")
+        print(f"Error adding reminder: {e} ")
         raise HTTPException(status_code=500, detail=str(e))
 
 # ==================== DELETE REMINDER ====================

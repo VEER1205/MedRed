@@ -55,7 +55,6 @@ def register(username: str = Form(...), email: str = Form(...), password: str = 
 @router.put("/updateUser/")
 async def updateUser(
     request: Request,
-    data = Depends(getCurrentUserFromCookie),
     mobileNumber: str = Form(...),
     emergencyContactNumber: str = Form(...),
     birthDate: str = Form(...),
@@ -70,6 +69,7 @@ async def updateUser(
     allergies: Optional[str] = Form("")  # Optional with default
 ):
     # Validate token first
+    data = getCurrentUserFromCookie(request.cookies.get("token"))
     if not data:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 

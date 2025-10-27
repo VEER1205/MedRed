@@ -374,7 +374,16 @@ function resetForm() {
 // Logout function
 function logout() {
     if (confirm('Are you sure you want to logout?')) {
-        window.location.href = '/logout';
+        fetch('/api/logout', {
+            method: 'GET',
+            credentials: 'include'
+        }).then(response => {
+            if (response.ok) {
+                window.location.href = '/';
+            } else {
+                console.error('Logout failed:', response);
+            }
+        });
     }
 }
 

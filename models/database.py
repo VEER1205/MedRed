@@ -20,7 +20,6 @@ def createConnection():
     return connection
 
 
-
 def getUser(email):
     conn = createConnection()
     cus = conn.cursor(dictionary=True)
@@ -51,7 +50,7 @@ def getUserForDashboard(userId):
 def createUser(fname, lname, email, password):
     try:
         conn = createConnection()
-        cus = conn.cursor()
+        cus = conn.cursor(dictionary=True)
         userId = str(uuid.uuid4())
         query = "INSERT INTO USERS(userId, fname, lname, email, password) VALUES (%s, %s, %s, %s, %s)"
         cus.execute(query, (userId, fname, lname, email, password))
@@ -78,7 +77,7 @@ def updateUser(
             allergies=None):
     try:
         conn = createConnection()
-        cus = conn.cursor()
+        cus = conn.cursor(dictionary=True)
         query = """
         UPDATE USERS 
         SET  medicalConditions = %s, bloodGroup = %s, allergies = %s, mobileNumber=%s,emergencyContactNumber=%s,birthDate=%s, gender = %s
@@ -99,22 +98,22 @@ def updateUser(
     except Exception as e:
         return {"error": str(e), "msg": "Failed to update user"}
 
-def createReminder(userId,medicineName,dosage,time):
-    try:
-        conn = createConnection()
-        cus = conn.cursor()
-        reminderId = str(uuid.uuid4())
-        query = "INSERT INTO remainders (reminderId, userId, medicineName, dosage, time) VALUES (%s, %s, %s, %s, %s)"
-        cus.execute(query, (reminderId, userId, medicineName, dosage, time))
-        conn.commit()
-        return {"msg": "Reminder created successfully"}
-    except Exception as e:
-        return {"error": str(e), "msg": "Failed to create reminder"}
+# def createReminder(userId,medicineName,dosage,time) -> dict:
+#     try:
+#         conn = createConnection()
+#         cus = conn.cursor(dictionary=True)
+#         reminderId = str(uuid.uuid4())
+#         query = "INSERT INTO remainders (reminderId, userId, medicineName, dosage, time) VALUES (%s, %s, %s, %s, %s)"
+#         cus.execute(query, (reminderId, userId, medicineName, dosage, time))
+#         conn.commit()
+#         return {"success": True , "msg": "Reminder created successfully"}
+#     except Exception as e:
+#         return {"error": str(e), "msg": "Failed to create reminder"}
 
 def getReminders(time):
     try:
         conn = createConnection()
-        cus = conn.cursor()
+        cus = conn.cursor(dictionary=True)
         query = "SELECT * FROM remainders WHERE time = %s"
         cus.execute(query, (time,))
         return cus.fetchall()
@@ -124,7 +123,7 @@ def getReminders(time):
 def getUserReminders(userId):
     try:
         conn = createConnection()
-        cus = conn.cursor()
+        cus = conn.cursor(dictionary=True)
         query = "SELECT * FROM remainders WHERE userId = %s"
         cus.execute(query, (userId,))
         return cus.fetchall()
@@ -134,7 +133,7 @@ def getUserReminders(userId):
 def deleteReminder(reminderId):
     try:
         conn = createConnection()
-        cus = conn.cursor()
+        cus = conn.cursor(dictionary=True)
         query = "DELETE FROM remainders WHERE reminderId = %s"
         cus.execute(query, (reminderId,))
         conn.commit()
@@ -146,7 +145,7 @@ def getUserById(userId):
     """Get user details by ID"""
     try:
         conn = createConnection()
-        cus = conn.cursor()
+        cus = conn.cursor(dictionary=True)
         query = "SELECT userId, fname, lname, mobileNumber, email, bloodGroup, emergencyContactNumber, allergies, medicalConditions FROM USERS WHERE userId = %s"
         cus.execute(query, (userId,))
         result = cus.fetchone()
@@ -159,7 +158,7 @@ def getReminderById(reminderId):
     """Get reminder details by ID"""
     try:
         conn = createConnection()
-        cus = conn.cursor()
+        cus = conn.cursor(dictionary=True)
         query = "SELECT reminderId, userId, medicineName, dosage, time FROM remainders WHERE reminderId = %s"
         cus.execute(query, (reminderId,))
         result = cus.fetchone()
@@ -172,7 +171,7 @@ def updateReminder(reminderId, medicineName, dosage, time):
     """Update reminder"""
     try:
         conn = createConnection()
-        cus = conn.cursor()
+        cus = conn.cursor(dictionary=True)
         query = "UPDATE remainders SET medicineName = %s, dosage = %s, time = %s WHERE reminderId = %s"
         cus.execute(query, (medicineName, dosage, time, reminderId))
         conn.commit()
@@ -201,10 +200,10 @@ def getAllActiveReminders():
         return []
 
 # Update createReminder to return reminderId
-def createReminder(userId, medicineName, dosage, time):
+def createReminder(userId, medicineName, dosage, time) -> dict :
     try:
         conn = createConnection()
-        cus = conn.cursor()
+        cus = conn.cursor(dictionary=True)
         reminderId = str(uuid.uuid4())
         query = "INSERT INTO remainders (reminderId, userId, medicineName, dosage, time) VALUES (%s, %s, %s, %s, %s)"
         cus.execute(query, (reminderId, userId, medicineName, dosage, time))
@@ -212,7 +211,7 @@ def createReminder(userId, medicineName, dosage, time):
         return {"msg": "Reminder created successfully", "reminderId": reminderId, "success": True}
     except Exception as e:
         conn.rollback()
-        print(f"Error creating reminder: {e}")
+        print(f"Error creating reminder 1: {e}")
         return {"error": str(e), "msg": "Failed to create reminder", "success": False}
 
 """

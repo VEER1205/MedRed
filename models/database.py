@@ -99,17 +99,17 @@ def updateUser(
     except Exception as e:
         return {"error": str(e), "msg": "Failed to update user"}
 
-# def createReminder(userId,medicineName,dosage,time) -> dict:
-#     try:
-#         conn = createConnection()
-#         cus = conn.cursor(dictionary=True)
-#         reminderId = str(uuid.uuid4())
-#         query = "INSERT INTO remainders (reminderId, userId, medicineName, dosage, time) VALUES (%s, %s, %s, %s, %s)"
-#         cus.execute(query, (reminderId, userId, medicineName, dosage, time))
-#         conn.commit()
-#         return {"success": True , "msg": "Reminder created successfully"}
-#     except Exception as e:
-#         return {"error": str(e), "msg": "Failed to create reminder"}
+def createReminder(userId,medicineName,dosage,time) -> dict:
+    try:
+        conn = createConnection()
+        cus = conn.cursor(dictionary=True)
+        reminderId = str(uuid.uuid4())
+        query = "INSERT INTO remainders (reminderId, userId, medicineName, dosage, time) VALUES (%s, %s, %s, %s, %s)"
+        cus.execute(query, (reminderId, userId, medicineName, dosage, time))
+        conn.commit()
+        return {"success": True , "msg": "Reminder created successfully"}
+    except Exception as e:
+        return {"error": str(e), "msg": "Failed to create reminder"}
 
 def getReminders(time):
     try:

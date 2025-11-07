@@ -1,229 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MedRed - Dashboard</title>
-    <link rel="stylesheet" href="/static/dashboard.css" />
-  </head>
-  <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-      <div class="navbar-container">
-        <a href="/" class="navbar-brand">
-          <div class="navbar-logo">
-            <svg viewBox="0 0 24 24">
-              <defs>
-                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style="stop-color: #dc2626" />
-                  <stop offset="100%" style="stop-color: #b91c1c" />
-                </linearGradient>
-              </defs>
-              <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1 16h2v-6h-2v6zm0-8h2V6h-2v4z" />
-            </svg>
-          </div>
-          <div class="navbar-text">MedRed</div>
-        </a>
-
-        <ul class="navbar-menu">
-          <li>
-            <a href="/" class="navbar-link">
-              <span>Home</span>
-            </a>
-          </li>
-          <li>
-            <a href="/Dashboard" class="navbar-link active">
-              <span>Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a href="/Reminders" class="navbar-link">
-              <span>Reminders</span>
-            </a>
-          </li>
-        </ul>
-
-        <div class="navbar-user" id="navbarUser">
-          <div class="user-avatar" id="navUserAvatar">JD</div>
-          <div class="user-info">
-            <div class="user-name" id="navUserName">John Doe</div>
-            <div class="user-email" id="navUserEmail">john@example.com</div>
-          </div>
-        </div>
-        
-        <div class="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container">
-      <!-- Welcome Section -->
-      <div class="welcome-section">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-          <div>
-            <h1 class="welcome-title">
-              Welcome back, <span id="welcomeName">John</span>!
-            </h1>
-            <p class="welcome-subtitle">Here's your health overview</p>
-          </div>
-          <button class="btn btn-primary" onclick="window.location.href='/info'" style="padding: 14px 28px; font-size: 15px">
-            <span>✏️</span>
-            <span>Edit Profile</span>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MedRed • Dashboard</title>
+  <link rel="stylesheet" href="/static/dashboard.css" />
+</head>
+<body>
+  <!-- NAV -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1 16h2v-6h-2v6zm0-8h2V6h-2v4z"/></svg></div>
+        <span class="brand-name">MedRed</span>
+      </a>
+      <div style="position: relative;">
+        <div class="avatar" id="navUserAvatar">JD</div>
+        <div class="user-menu" id="userMenu">
+          <a href="/profile" class="menu-item">
+            <span></span>
+            <span>My Profile</span>
+          </a>
+          <a href="/settings" class="menu-item">
+            <span></span>
+            <span>Settings</span>
+          </a>
+          <a href="/appointments" class="menu-item">
+            <span></span>
+            <span>Appointments</span>
+          </a>
+          <div class="menu-divider"></div>
+          <button class="menu-item danger" onclick="if(confirm('Are you sure you want to logout?')) window.location.href='/logout'">
+            <span></span>
+            <span>Logout</span>
           </button>
         </div>
       </div>
+    </div>
+  </header>
 
-      <!-- Main Grid -->
-      <div class="main-grid">
-        <!-- Personal Information -->
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">
-              <div class="title-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-              </div>
-              <span>Personal Information</span>
-            </h2>
-          </div>
-
-          <div class="info-grid">
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">📱</span> Mobile
-              </span>
-              <span class="info-value" id="mobileNumber">+91 9876543210</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">⚧</span> Gender
-              </span>
-              <span class="info-value" id="gender">Male</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">📅</span> Birth Date
-              </span>
-              <span class="info-value" id="birthDate">Jan 15, 1990</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">🩸</span> Blood Group
-              </span>
-              <span class="info-value" id="bloodGroup">O+</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Address Information -->
-        <div class="card">
-          <h2 class="card-title" style="margin-bottom: 24px">
-            <div class="title-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-            </div>
-            <span>Address</span>
-          </h2>
-
-          <div class="info-grid">
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">🏠</span> Street
-              </span>
-              <span class="info-value" id="streetAddress">123 Medical St</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">🏙️</span> City
-              </span>
-              <span class="info-value" id="city">Mumbai</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">📍</span> State
-              </span>
-              <span class="info-value" id="state">Maharashtra</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">📮</span> PIN Code
-              </span>
-              <span class="info-value" id="pinCode">400001</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">🌍</span> Country
-              </span>
-              <span class="info-value" id="country">India</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Medical Information -->
-        <div class="card">
-          <h2 class="card-title" style="margin-bottom: 24px">
-            <div class="title-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-              </svg>
-            </div>
-            <span>Medical Information</span>
-          </h2>
-
-          <div class="info-grid">
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">🚨</span> Emergency Contact
-              </span>
-              <span class="info-value" id="emergencyContact">+91 9123456789</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">⚠️</span> Allergies
-              </span>
-              <span class="info-value" id="allergies">Penicillin</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">
-                <span class="info-icon">🩺</span> Medical Conditions
-              </span>
-              <span class="info-value" id="medicalConditions">Hypertension</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Today's Reminders -->
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title">
-              <div class="title-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                  <line x1="16" y1="2" x2="16" y2="6"></line>
-                  <line x1="8" y1="2" x2="8" y2="6"></line>
-                  <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-              </div>
-              <span>Today's Reminders</span>
-              <span class="badge" id="reminderCount">3</span>
-            </h2>
-          </div>
-
-          <div class="reminder-list" id="reminderList">
-            <!-- Reminders will be populated here -->
-          </div>
-        </div>
+  <main class="container">
+    <!-- HEADER -->
+    <div class="header">
+      <div>
+        <div class="title">Welcome back, <span id="welcomeName">John</span></div>
+        <div class="subtitle">Your personalized health overview.</div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="cancelBtn" hidden>Cancel</button>
+        <button class="btn btn-primary" id="editBtn">✏️ Edit Profile</button>
+        <button class="btn btn-primary" id="saveBtn" hidden>Save Changes</button>
       </div>
     </div>
 
-    <script src="/static/dashboard.js"></script>
-  </body>
+    <!-- MEDICAL 3D DNA LINE -->
+    <div class="dna-strip" aria-hidden="true">
+      <div class="dna-scene">
+        <div class="dna" id="dnaRoot"></div>
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <section class="grid">
+      <!-- PERSONAL -->
+      <article class="card">
+        <div class="card-header">
+          <div class="icon"></div>
+          <div class="card-title">Personal Information</div>
+        </div>
+        <div class="rows">
+          <div class="row">
+            <div class="label">Full Name</div>
+            <div class="value">
+              <div class="display" id="fullName_display"></div>
+              <div class="editor">
+                <input class="input" id="fullName_input" type="text" placeholder="Your full name" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Mobile</div>
+            <div class="value">
+              <div class="display" id="mobileNumber_display"></div>
+              <div class="editor">
+                <input class="input" id="mobileNumber_input" type="tel" inputmode="tel" autocomplete="tel" placeholder="+91 1234567890" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Gender</div>
+            <div class="value">
+              <div class="display" id="gender_display"></div>
+              <div class="editor">
+                <input class="input" id="gender_input" type="text" placeholder="Male / Female / Other" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Birth Date</div>
+            <div class="value">
+              <div class="display" id="birthDate_display"></div>
+              <div class="editor">
+                <input class="input" id="birthDate_input" type="date" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Blood Group</div>
+            <div class="value">
+              <div class="display" id="bloodGroup_display"></div>
+              <div class="editor">
+                <input class="input" id="bloodGroup_input" type="text" placeholder="e.g., O+, A-, AB+">
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ADDRESS -->
+      <article class="card">
+        <div class="card-header">
+          <div class="icon"></div>
+          <div class="card-title">Address</div>
+        </div>
+        <div class="rows">
+          <div class="row">
+            <div class="label">Street</div>
+            <div class="value">
+              <div class="display" id="streetAddress_display"></div>
+              <div class="editor">
+                <input class="input" id="streetAddress_input" type="text" autocomplete="address-line1" placeholder="Street address" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">City</div>
+            <div class="value">
+              <div class="display" id="city_display"></div>
+              <div class="editor">
+                <input class="input" id="city_input" type="text" autocomplete="address-level2" placeholder="City" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">State</div>
+            <div class="value">
+              <div class="display" id="state_display"></div>
+              <div class="editor">
+                <input class="input" id="state_input" type="text" autocomplete="address-level1" placeholder="State" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">PIN</div>
+            <div class="value">
+              <div class="display" id="pinCode_display"></div>
+              <div class="editor">
+                <input class="input" id="pinCode_input" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="6-digit PIN" required>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- MEDICAL -->
+      <article class="card">
+        <div class="card-header">
+          <div class="icon"></div>
+          <div class="card-title">Medical Information</div>
+        </div>
+        <div class="rows">
+          <div class="row">
+            <div class="label">Allergies</div>
+            <div class="value">
+              <div class="display" id="allergies_display"></div>
+              <div class="editor">
+                <input class="input" id="allergies_input" type="text" placeholder="None">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Conditions</div>
+            <div class="value">
+              <div class="display" id="medicalConditions_display"></div>
+              <div class="editor">
+                <input class="input" id="medicalConditions_input" type="text" placeholder="None">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Emergency Contact</div>
+            <div class="value">
+              <div class="display" id="emergencyContact_display"></div>
+              <div class="editor">
+                <input class="input" id="emergencyContact_input" type="tel" inputmode="tel" autocomplete="tel" placeholder="+91 1234567890">
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- REMINDERS -->
+      <article class="card reminders">
+        <div class="card-header" style="justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="icon"></div>
+            <div class="card-title">Today's Reminders</div>
+          </div>
+          <div class="btn" style="pointer-events:none;">Count: <strong id="reminderCount" style="margin-left:6px;">0</strong></div>
+        </div>
+        <div class="rem-list" id="reminderList"></div>
+      </article>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script src="/static/dashboard.js"></script>
+</body>
 </html>

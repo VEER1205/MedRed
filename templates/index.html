@@ -3,731 +3,613 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="MedRed - Smart Healthcare Made Simple. Personalized medicine reminders and healthcare management.">
-  <title>MedRed - Smart Healthcare Made Simple</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.6;
-      color: #1f2937;
-      overflow-x: hidden;
-    }
-
-    /* Header */
-    header {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      padding: 1rem 0;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
-      border-bottom: 1px solid rgba(220, 38, 38, 0.1);
-      transition: all 0.3s ease;
-    }
-
-    header.scrolled {
-      padding: 0.5rem 0;
-      box-shadow: 0 6px 40px rgba(0, 0, 0, 0.12);
-    }
-
-    nav {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 2rem;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .logo:hover {
-      transform: scale(1.05);
-    }
-
-    .logo svg {
-      width: 36px;
-      height: 36px;
-      margin-right: 12px;
-      fill: url(#logoGradient);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: #6b7280;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 15px;
-      transition: all 0.3s ease;
-      padding: 8px 16px;
-      border-radius: 8px;
-      position: relative;
-    }
-
-    .nav-links a:hover {
-      color: #dc2626;
-      background: rgba(220, 38, 38, 0.05);
-    }
-
-    .nav-links a.active {
-      color: #dc2626;
-      background: rgba(220, 38, 38, 0.1);
-    }
-
-    .auth-buttons {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .btn {
-      padding: 0.7rem 1.5rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .btn-login {
-      background: white;
-      color: #dc2626;
-      border: 2px solid rgba(220, 38, 38, 0.2);
-    }
-
-    .btn-login:hover {
-      border-color: #dc2626;
-      background: rgba(220, 38, 38, 0.05);
-      transform: translateY(-2px);
-    }
-
-    .btn-signup {
-      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-      color: white;
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-    }
-
-    .btn-signup:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
-    }
-
-    .user-display {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 16px;
-      background: linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(185, 28, 28, 0.05) 100%);
-      border-radius: 10px;
-      font-weight: 600;
-      color: #1f2937;
-    }
-
-    /* Hero Section */
-    .hero {
-      margin-top: 80px;
-      padding: 8rem 2rem 6rem;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      top: -20%;
-      right: -10%;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(220, 38, 38, 0.08) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: float 25s ease-in-out infinite;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      bottom: -20%;
-      left: -10%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(185, 28, 28, 0.05) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: float 30s ease-in-out infinite reverse;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      33% { transform: translate(30px, -30px) rotate(5deg); }
-      66% { transform: translate(-20px, 20px) rotate(-5deg); }
-    }
-
-    .hero-content {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-text {
-      animation: fadeInLeft 0.8s ease;
-    }
-
-    @keyframes fadeInLeft {
-      from {
-        opacity: 0;
-        transform: translateX(-50px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes fadeInRight {
-      from {
-        opacity: 0;
-        transform: translateX(50px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .hero-text h1 {
-      font-size: 3.5rem;
-      margin-bottom: 1.5rem;
-      color: #1f2937;
-      font-weight: 800;
-      letter-spacing: -1px;
-      line-height: 1.2;
-    }
-
-    .hero-text .highlight {
-      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-text p {
-      font-size: 1.2rem;
-      color: #6b7280;
-      margin-bottom: 2.5rem;
-      line-height: 1.8;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-      color: white;
-      padding: 1rem 2.5rem;
-      font-size: 1.1rem;
-      box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 30px rgba(220, 38, 38, 0.4);
-    }
-
-    .btn-secondary {
-      background: white;
-      color: #dc2626;
-      border: 2px solid #dc2626;
-      padding: 1rem 2.5rem;
-      font-size: 1.1rem;
-    }
-
-    .btn-secondary:hover {
-      background: #dc2626;
-      color: white;
-      transform: translateY(-3px);
-    }
-
-    .hero-image {
-      text-align: center;
-      animation: fadeInRight 0.8s ease;
-    }
-
-    .hero-illustration {
-      width: 100%;
-      max-width: 500px;
-      height: auto;
-      filter: drop-shadow(0 20px 40px rgba(220, 38, 38, 0.15));
-      animation: floatImage 6s ease-in-out infinite;
-    }
-
-    @keyframes floatImage {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
-
-    /* Features Section */
-    .features {
-      padding: 6rem 2rem;
-      background: white;
-      position: relative;
-    }
-
-    .features-header {
-      text-align: center;
-      margin-bottom: 5rem;
-      animation: fadeInUp 0.8s ease;
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .features-header h2 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: #1f2937;
-      font-weight: 800;
-    }
-
-    .features-header p {
-      font-size: 1.2rem;
-      color: #6b7280;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .features-grid {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 2.5rem;
-    }
-
-    .feature-card {
-      padding: 2.5rem;
-      background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
-      border-radius: 20px;
-      border: 2px solid rgba(220, 38, 38, 0.1);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, rgba(220, 38, 38, 0.05) 0%, transparent 70%);
-      border-radius: 50%;
-      transform: translate(40%, -40%);
-      transition: all 0.4s ease;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 60px rgba(220, 38, 38, 0.15);
-      border-color: #dc2626;
-    }
-
-    .feature-card:hover::before {
-      transform: translate(30%, -30%) scale(1.5);
-    }
-
-    .feature-icon {
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
-      transition: transform 0.3s ease;
-    }
-
-    .feature-card:hover .feature-icon {
-      transform: scale(1.1) rotate(5deg);
-    }
-
-    .feature-icon svg {
-      width: 36px;
-      height: 36px;
-      fill: white;
-    }
-
-    .feature-card h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: #1f2937;
-      font-weight: 700;
-    }
-
-    .feature-card p {
-      color: #6b7280;
-      line-height: 1.7;
-    }
-
-    /* Stats Section */
-    .stats-section {
-      padding: 5rem 2rem;
-      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-      color: white;
-    }
-
-    .stats-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 3rem;
-      text-align: center;
-    }
-
-    .stat-item {
-      animation: fadeInUp 0.8s ease;
-    }
-
-    .stat-number {
-      font-size: 3.5rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
-
-    /* Footer */
-    footer {
-      background: #1f2937;
-      color: white;
-      padding: 3rem 2rem;
-      text-align: center;
-    }
-
-    footer p {
-      margin: 0.5rem 0;
-      opacity: 0.8;
-    }
-
-    .footer-logo {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* Mobile Menu */
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      cursor: pointer;
-      padding: 8px;
-    }
-
-    .hamburger span {
-      width: 24px;
-      height: 3px;
-      background: #dc2626;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-
-    /* Responsive */
-    @media (max-width: 968px) {
-      .hero-content {
-        grid-template-columns: 1fr;
-        gap: 3rem;
-      }
-
-      .hero-text h1 {
-        font-size: 2.5rem;
-      }
-
-      .nav-links {
-        display: none;
-      }
-
-      .hamburger {
-        display: flex;
-      }
-
-      .features-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .stats-container {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 640px) {
-      .hero {
-        padding: 5rem 1.5rem 4rem;
-      }
-
-      .hero-text h1 {
-        font-size: 2rem;
-      }
-
-      .hero-buttons {
-        flex-direction: column;
-      }
-
-      .btn-primary, .btn-secondary {
-        width: 100%;
-        text-align: center;
-      }
-
-      .stats-container {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .features-header h2 {
-        font-size: 2rem;
-      }
-    }
-  </style>
+  <title>MedRed - Smart Medicine Reminder App</title>
+  <meta name="description" content="Never miss your medication with MedRed's AI-powered smart reminders. Track, schedule, and manage your medications effortlessly." />
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="/static/index.css" />
 </head>
 <body>
-  <!-- Header -->
-  <header id="header">
-    <nav>
-      <div class="logo" onclick="window.location.href='/'">
-        <svg viewBox="0 0 24 24">
-          <defs>
-            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#dc2626" />
-              <stop offset="100%" style="stop-color:#b91c1c" />
-            </linearGradient>
-          </defs>
-          <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1 16h2v-6h-2v6zm0-8h2V6h-2v4z" />
-        </svg>
-        MedRed
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <i data-lucide="pill" style="color: var(--primary); width: 24px; height: 24px;"></i>
+        </div>
+        <span class="gradient-text">MedRed</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="/Dashboard">Dashboard</a>
+        <a href="/Reminders">Reminders</a>
       </div>
 
-      <ul class="nav-links">
-        <li><a href="/" class="active">Home</a></li>
-        <li><a href="/Dashboard">Dashboard</a></li>
-        <li><a href="/Reminders">Reminders</a></li>
-      </ul>
-
-      <div class="auth-buttons">
-        {% if user %}
-          <div class="user-display">
-            <span>{{user.fname}} {{user.lname}}</span>
-          </div>
-          <a href="/api/logout" class="btn btn-login">Logout</a>
-        {% else %}
-          <a class="btn btn-signup" href="/login">Log in/Sign Up</a>
-        {% endif %}
+      <div class="nav-buttons">
+        <a href="/login" class="btn btn-primary">Sign In/Sign Up</a>
       </div>
 
-      <div class="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
+      <button class="menu-toggle" id="menuBtn" aria-label="Toggle menu">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="/Dashboard">
+        <i data-lucide="layout-dashboard"></i> Dashboard
+      </a>
+      <a href="/Reminders">
+        <i data-lucide="bell"></i> Reminders
+      </a>
+      <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+        <a href="/login" class="btn btn-primary" style="flex: 1; justify-content: center;">Sign In/Sign Up</a>
       </div>
-    </nav>
-  </header>
+    </div>
+  </nav>
 
   <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <div class="hero-text">
-        <h1>Empowering <span class="highlight">Healthcare</span> with Smart Medicine Reminders</h1>
-        <p>MedRed brings peace of mind and control to your healthcare journey with personalized medicine reminders, seamless monitoring, and comprehensive health tracking.</p>
+  <section class="hero" id="home">
+    <div class="hero-bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+    </div>
+
+    <div class="container">
+      <div class="hero-content animate-fadeIn">
+        <span class="badge">
+          <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+          AI-Powered Medicine Reminders
+        </span>
+
+        <h1>
+          Never Miss Your
+          <span class="gradient-text glow-text">Medicine</span>
+          Again
+        </h1>
+
+        <p class="hero-description">
+          Smart AI-powered reminders that adapt to your schedule. Take control of your health with intelligent medication tracking.
+        </p>
+
         <div class="hero-buttons">
-          {% if user %}
-            <a href="/Dashboard" class="btn btn-primary">Go to Dashboard</a>
-            <a href="/Reminders" class="btn btn-secondary">View Reminders</a>
-          {% else %}
-            <a href="/login" class="btn btn-primary">Get Started Now</a>
-            <button class="btn btn-secondary" onclick="scrollToFeatures()">Learn More</button>
-          {% endif %}
+          <a href="#signup" class="btn btn-primary btn-lg">
+            Get Started Free
+            <i data-lucide="arrow-right" style="width: 20px; height: 20px;"></i>
+          </a>
+          <a href="#demo" class="btn btn-outline btn-lg">Watch Demo</a>
+        </div>
+
+        <div class="stats">
+          <div class="stat-item">
+            <div class="stat-number">99.9%</div>
+            <div class="stat-label">Reliability</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">500K+</div>
+            <div class="stat-label">Users</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">4.9★</div>
+            <div class="stat-label">Rating</div>
+          </div>
         </div>
       </div>
-      <div class="hero-image">
-        <svg class="hero-illustration" viewBox="0 0 500 400">
-          <defs>
-            <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#dc2626" />
-              <stop offset="100%" style="stop-color:#b91c1c" />
-            </linearGradient>
-          </defs>
-          <!-- Main Card -->
-          <rect x="50" y="50" width="400" height="300" fill="white" rx="20" stroke="#e5e7eb" stroke-width="2"/>
-          <!-- Header -->
-          <rect x="50" y="50" width="400" height="80" fill="url(#cardGradient)" rx="20" />
-          <rect x="50" y="110" width="400" height="20" fill="url(#cardGradient)" />
-          <!-- Icon -->
-          <circle cx="250" cy="90" r="25" fill="white" opacity="0.3"/>
-          <circle cx="250" cy="90" r="20" fill="white"/>
-          <path d="M250 75 L250 105 M235 90 L265 90" stroke="url(#cardGradient)" stroke-width="5" stroke-linecap="round"/>
-          <!-- Pills -->
-          <ellipse cx="150" cy="200" rx="30" ry="15" fill="#fca5a5" opacity="0.7"/>
-          <ellipse cx="250" cy="220" rx="25" ry="13" fill="#fca5a5" opacity="0.8"/>
-          <ellipse cx="350" cy="200" rx="28" ry="14" fill="#fca5a5" opacity="0.7"/>
-          <!-- Text lines -->
-          <rect x="100" y="260" width="300" height="15" fill="#e5e7eb" rx="5"/>
-          <rect x="100" y="290" width="250" height="15" fill="#e5e7eb" rx="5"/>
-          <rect x="100" y="320" width="200" height="15" fill="#e5e7eb" rx="5"/>
-        </svg>
-      </div>
-    </div>
-  </section>
 
-  <!-- Stats Section -->
-  <section class="stats-section">
-    <div class="stats-container">
-      <div class="stat-item">
-        <div class="stat-number">10K+</div>
-        <div class="stat-label">Active Users</div>
+      <!-- Floating Icons -->
+      <div class="floating-icon floating-icon-1">
+        <i data-lucide="bell" style="width: 32px; height: 32px; color: var(--primary);"></i>
       </div>
-      <div class="stat-item">
-        <div class="stat-number">50K+</div>
-        <div class="stat-label">Reminders Sent</div>
+      <div class="floating-icon floating-icon-2">
+        <i data-lucide="heart" style="width: 32px; height: 32px; color: var(--accent);"></i>
       </div>
-      <div class="stat-item">
-        <div class="stat-number">98%</div>
-        <div class="stat-label">Adherence Rate</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">24/7</div>
-        <div class="stat-label">Support Available</div>
+      <div class="floating-icon floating-icon-3">
+        <i data-lucide="calendar" style="width: 32px; height: 32px; color: var(--primary);"></i>
       </div>
     </div>
+
+    <canvas id="canvas"></canvas>
   </section>
 
   <!-- Features Section -->
-  <section class="features" id="features">
-    <div class="features-header">
-      <h2>Core Features</h2>
-      <p>Everything you need to manage your medications effectively</p>
+  <section id="features">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Features</p>
+        <h2 class="section-title">
+          Everything You Need to Stay <span class="gradient-text">Healthy</span>
+        </h2>
+        <p class="section-description">
+          Powerful features designed to make medication management effortless and reliable.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="bell" style="width: 28px; height: 28px; color: var(--primary);"></i>
+          </div>
+          <h3 class="feature-title">Smart Reminders</h3>
+          <p class="feature-description">
+            AI-powered notifications that adapt to your routine and never let you miss a dose.
+          </p>
+          <div class="feature-glow"></div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="calendar" style="width: 28px; height: 28px; color: var(--primary);"></i>
+          </div>
+          <h3 class="feature-title">Schedule Tracking</h3>
+          <p class="feature-description">
+            Visual calendar interface to manage all your medications in one place.
+          </p>
+          <div class="feature-glow"></div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="smartphone" style="width: 28px; height: 28px; color: var(--primary);"></i>
+          </div>
+          <h3 class="feature-title">Cross-Platform Sync</h3>
+          <p class="feature-description">
+            Seamlessly access your medication schedule across all devices.
+          </p>
+          <div class="feature-glow"></div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="shield" style="width: 28px; height: 28px; color: var(--primary);"></i>
+          </div>
+          <h3 class="feature-title">Privacy First</h3>
+          <p class="feature-description">
+            Military-grade encryption keeps your health data secure and private.
+          </p>
+          <div class="feature-glow"></div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="zap" style="width: 28px; height: 28px; color: var(--primary);"></i>
+          </div>
+          <h3 class="feature-title">Instant Alerts</h3>
+          <p class="feature-description">
+            Get real-time push notifications, SMS, and email reminders.
+          </p>
+          <div class="feature-glow"></div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i data-lucide="clock" style="width: 28px; height: 28px; color: var(--primary);"></i>
+          </div>
+          <h3 class="feature-title">History Tracking</h3>
+          <p class="feature-description">
+            Complete medication history and analytics for your healthcare provider.
+          </p>
+          <div class="feature-glow"></div>
+        </div>
+      </div>
     </div>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-          </svg>
-        </div>
-        <h3>Smart Reminders</h3>
-        <p>Set, track, and get notified about medications with customizable reminders, dosage notes, and real-time updates for better adherence.</p>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="reminder">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Simple Process</p>
+        <h2 class="section-title">
+          How <span class="gradient-text">MedRed</span> Works
+        </h2>
+        <p class="section-description">
+          Get started in three simple steps and take control of your medication routine.
+        </p>
       </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-          </svg>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-icon-wrapper">
+            <div class="step-icon">
+              <i data-lucide="pill" style="width: 48px; height: 48px; color: var(--primary);"></i>
+            </div>
+            <div class="step-number">01</div>
+          </div>
+          <h3 class="step-title">Add Medications</h3>
+          <p class="step-description">
+            Scan or manually enter your prescriptions. Our AI creates an optimized schedule.
+          </p>
         </div>
-        <h3>User Profiles</h3>
-        <p>Store personalized health data, medication history, and communication preferences securely in one centralized location.</p>
+
+        <div class="step-card">
+          <div class="step-icon-wrapper">
+            <div class="step-icon">
+              <i data-lucide="bell" style="width: 48px; height: 48px; color: var(--primary);"></i>
+            </div>
+            <div class="step-number">02</div>
+          </div>
+          <h3 class="step-title">Set Reminders</h3>
+          <p class="step-description">
+            Customize notification preferences for each medication and time.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-icon-wrapper">
+            <div class="step-icon">
+              <i data-lucide="activity" style="width: 48px; height: 48px; color: var(--primary);"></i>
+            </div>
+            <div class="step-number">03</div>
+          </div>
+          <h3 class="step-title">Stay On Track</h3>
+          <p class="step-description">
+            Receive timely alerts and track your adherence with detailed analytics.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard Preview Section -->
+  <section id="dashboard">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Dashboard</p>
+        <h2 class="section-title">Everything at a Glance</h2>
+        <p class="section-description">
+          Beautiful, intuitive dashboard to manage your health.
+        </p>
       </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
-          </svg>
+      <div class="dash-grid">
+        <!-- Adherence Card -->
+        <div class="dash-card">
+          <h3 style="margin-bottom: 1.5rem;">Weekly Adherence</h3>
+          <div class="progress">
+            <div class="progress-bar"></div>
+          </div>
+          <p style="color: var(--muted); margin: 1rem 0;">
+            78% adherence this week. Great work!
+          </p>
+          <div class="pill-tags">
+            <div class="pill-tag">
+              <div class="dot dot-green"></div>
+              <span>Taken: 6</span>
+            </div>
+            <div class="pill-tag">
+              <div class="dot dot-yellow"></div>
+              <span>Due: 2</span>
+            </div>
+            <div class="pill-tag">
+              <div class="dot dot-red"></div>
+              <span>Missed: 0</span>
+            </div>
+          </div>
         </div>
-        <h3>Health Analytics</h3>
-        <p>Intuitive dashboards visualize medication history, upcoming doses, and health stats for smarter healthcare decisions.</p>
-      </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
-          </svg>
+        <!-- Upcoming Card -->
+        <div class="dash-card">
+          <h3 style="margin-bottom: 1.5rem;">Upcoming</h3>
+          <div class="med-list">
+            <div class="med-item">
+              <div class="med-info">
+                <h4>Metformin</h4>
+                <div class="med-time">8:00 AM • With food</div>
+              </div>
+              <div class="med-status status-due">Due Soon</div>
+            </div>
+            <div class="med-item">
+              <div class="med-info">
+                <h4>Lisinopril</h4>
+                <div class="med-time">1:00 PM • After lunch</div>
+              </div>
+              <div class="med-status status-scheduled">Scheduled</div>
+            </div>
+            <div class="med-item">
+              <div class="med-info">
+                <h4>Atorvastatin</h4>
+                <div class="med-time">10:00 PM • Bedtime</div>
+              </div>
+              <div class="med-status status-scheduled">Scheduled</div>
+            </div>
+          </div>
         </div>
-        <h3>Easy Management</h3>
-        <p>Add, edit, and delete reminders with ease. Manage multiple medications and schedules from a single interface.</p>
       </div>
+    </div>
+  </section>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
-          </svg>
-        </div>
-        <h3>Secure & Private</h3>
-        <p>Your data is protected with industry-standard encryption and privacy standards. Your health information stays confidential.</p>
-      </div>
+  <!-- CTA Section -->
+  <section>
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-bg"></div>
+        <div class="cta-content">
+          <span class="badge">
+            <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+            Limited Time Offer
+          </span>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-          </svg>
+          <h2 class="cta-title">
+            Ready to Transform Your
+            <span class="gradient-text glow-text">Health Routine?</span>
+          </h2>
+
+          <p class="cta-description">
+            Join thousands who never miss their medication. Start free today.
+          </p>
+
+          <div class="cta-buttons">
+            <a href="#signup" class="btn btn-primary btn-lg">
+              Start Free Trial
+              <i data-lucide="arrow-right" style="width: 20px; height: 20px;"></i>
+            </a>
+            <a href="#demo" class="btn btn-outline btn-lg">Schedule Demo</a>
+          </div>
+
+          <div class="cta-features">
+            <div class="cta-feature">
+              <div class="dot dot-red"></div>
+              Free 30-day trial
+            </div>
+            <div class="cta-feature">
+              <div class="dot dot-red"></div>
+              No credit card needed
+            </div>
+            <div class="cta-feature">
+              <div class="dot dot-red"></div>
+              Cancel anytime
+            </div>
+          </div>
         </div>
-        <h3>Emergency Contacts</h3>
-        <p>Store emergency contact information and medical conditions for quick access when needed most.</p>
+        <div class="cta-glow-1"></div>
+        <div class="cta-glow-2"></div>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer>
-    <div class="footer-logo">MedRed</div>
-    <p>&copy; 2025 MedRed. All rights reserved.</p>
-    <p>Empowering healthcare, one reminder at a time.</p>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">
+            <div class="logo-icon">
+              <i data-lucide="pill" style="color: var(--primary); width: 20px; height: 20px;"></i>
+            </div>
+            <span class="gradient-text">MedRed</span>
+          </div>
+          <p style="color: var(--muted); font-size: 0.875rem;">
+            Smart medication reminders for a healthier tomorrow.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="footer-title">Product</h3>
+          <ul class="footer-links">
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#reminder">Reminders</a></li>
+            <li><a href="#features">Features</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="footer-title">Company</h3>
+          <ul class="footer-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="footer-title">Legal</h3>
+          <ul class="footer-links">
+            <li><a href="#privacy">Privacy</a></li>
+            <li><a href="#terms">Terms</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 MedRed. All rights reserved.</p>
+      </div>
+    </div>
   </footer>
 
-  <script src="/static/index.js"></script>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+    });
+
+    // Close mobile menu when clicking links
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+      });
+    });
+
+    // Canvas Animation
+    function n(e) {
+      this.init(e || {});
+    }
+    n.prototype = {
+      init: function (e) {
+        this.phase = e.phase || 0;
+        this.offset = e.offset || 0;
+        this.frequency = e.frequency || 0.001;
+        this.amplitude = e.amplitude || 1;
+      },
+      update: function () {
+        return (
+          (this.phase += this.frequency),
+          (window.canvasE = this.offset + Math.sin(this.phase) * this.amplitude)
+        );
+      },
+      value: function () {
+        return window.canvasE;
+      },
+    };
+
+    function Line(e) {
+      this.init(e || {});
+    }
+
+    Line.prototype = {
+      init: function (e) {
+        this.spring = e.spring + 0.1 * Math.random() - 0.05;
+        this.friction = window.E.friction + 0.01 * Math.random() - 0.005;
+        this.nodes = [];
+        for (var t, n = 0; n < window.E.size; n++) {
+          t = new Node();
+          t.x = window.pos.x;
+          t.y = window.pos.y;
+          this.nodes.push(t);
+        }
+      },
+      update: function () {
+        let e = this.spring,
+          t = this.nodes[0];
+        t.vx += (window.pos.x - t.x) * e;
+        t.vy += (window.pos.y - t.y) * e;
+        for (var n, i = 0, a = this.nodes.length; i < a; i++)
+          (t = this.nodes[i]),
+            0 < i &&
+              ((n = this.nodes[i - 1]),
+              (t.vx += (n.x - t.x) * e),
+              (t.vy += (n.y - t.y) * e),
+              (t.vx += n.vx * window.E.dampening),
+              (t.vy += n.vy * window.E.dampening)),
+            (t.vx *= this.friction),
+            (t.vy *= this.friction),
+            (t.x += t.vx),
+            (t.y += t.vy),
+            (e *= window.E.tension);
+      },
+      draw: function () {
+        let e,
+          t,
+          n = this.nodes[0].x,
+          i = this.nodes[0].y;
+        window.ctx.beginPath();
+        window.ctx.moveTo(n, i);
+        for (var a = 1, o = this.nodes.length - 2; a < o; a++) {
+          e = this.nodes[a];
+          t = this.nodes[a + 1];
+          n = 0.5 * (e.x + t.x);
+          i = 0.5 * (e.y + t.y);
+          window.ctx.quadraticCurveTo(e.x, e.y, n, i);
+        }
+        e = this.nodes[a];
+        t = this.nodes[a + 1];
+        window.ctx.quadraticCurveTo(e.x, e.y, t.x, t.y);
+        window.ctx.stroke();
+        window.ctx.closePath();
+      },
+    };
+
+    function onMousemove(e) {
+      function o() {
+        window.lines = [];
+        for (let e = 0; e < window.E.trails; e++)
+          window.lines.push(new Line({ spring: 0.45 + (e / window.E.trails) * 0.025 }));
+      }
+      function c(e) {
+        e.touches
+          ? ((window.pos.x = e.touches[0].pageX), (window.pos.y = e.touches[0].pageY))
+          : ((window.pos.x = e.clientX), (window.pos.y = e.clientY)),
+          e.preventDefault();
+      }
+      function l(e) {
+        1 == e.touches.length &&
+          ((window.pos.x = e.touches[0].pageX), (window.pos.y = e.touches[0].pageY));
+      }
+      document.removeEventListener("mousemove", onMousemove),
+        document.removeEventListener("touchstart", onMousemove),
+        document.addEventListener("mousemove", c),
+        document.addEventListener("touchmove", c),
+        document.addEventListener("touchstart", l),
+        c(e),
+        o(),
+        render();
+    }
+
+    function render() {
+      if (window.ctx.running) {
+        window.ctx.globalCompositeOperation = "source-over";
+        window.ctx.clearRect(0, 0, window.ctx.canvas.width, window.ctx.canvas.height);
+        window.ctx.globalCompositeOperation = "lighter";
+        window.ctx.strokeStyle = "hsla(" + Math.round(window.f.update()) + ",100%,50%,0.025)";
+        window.ctx.lineWidth = 10;
+        for (var e, t = 0; t < window.E.trails; t++) {
+          (e = window.lines[t]).update();
+          e.draw();
+        }
+        window.ctx.frame++;
+        window.requestAnimationFrame(render);
+      }
+    }
+
+    function resizeCanvas() {
+      window.ctx.canvas.width = window.innerWidth - 20;
+      window.ctx.canvas.height = window.innerHeight;
+    }
+
+    window.canvasE = 0;
+    window.pos = {};
+    window.lines = [];
+    window.E = {
+      debug: true,
+      friction: 0.5,
+      trails: 80,
+      size: 50,
+      dampening: 0.025,
+      tension: 0.99,
+    };
+
+    function Node() {
+      this.x = 0;
+      this.y = 0;
+      this.vy = 0;
+      this.vx = 0;
+    }
+
+    function renderCanvas() {
+      window.ctx = document.getElementById("canvas").getContext("2d");
+      if (!window.ctx) return;
+      window.ctx.running = true;
+      window.ctx.frame = 1;
+      window.f = new n({
+        phase: Math.random() * 2 * Math.PI,
+        amplitude: 85,
+        frequency: 0.0015,
+        offset: 285,
+      });
+      document.addEventListener("mousemove", onMousemove);
+      document.addEventListener("touchstart", onMousemove);
+      document.body.addEventListener("orientationchange", resizeCanvas);
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("focus", () => {
+        if (!window.ctx.running) {
+          window.ctx.running = true;
+          render();
+        }
+      });
+      window.addEventListener("blur", () => {
+        window.ctx.running = true;
+      });
+      resizeCanvas();
+    }
+
+    // Initialize canvas when page loads
+    window.addEventListener('load', renderCanvas);
+  </script>
 </body>
 </html>

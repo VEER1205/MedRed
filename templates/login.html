@@ -1,69 +1,966 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedRed - Login</title>
-    <link rel="stylesheet" href="/static/login.css">
-</head>
-<body>
-    <div class="login-container">
-        <div class="logo-section">
-            <div class="logo">
-                <div class="logo-icon">+</div>
-                <div class="logo-text">MedRed</div>
-            </div>
-            <p class="subtitle">Premium Medicine Reminder — User & Caretaker Access</p>
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | MedRed</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <div class="input-wrapper">
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        placeholder="you@example.com" 
-                        required
-                    >
+      :root {
+        --background: hsl(0, 0%, 7%);
+        --foreground: hsl(0, 0%, 98%);
+        --primary: hsl(0, 72%, 58%);
+        --primary-dark: hsl(0, 72%, 48%);
+        --accent: hsl(0, 85%, 65%);
+        --muted: hsl(0, 0%, 65%);
+        --border: hsl(0, 0%, 18%);
+        --card-bg: rgba(26, 26, 26, 0.4);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background-color: var(--background);
+        color: var(--foreground);
+        overflow-x: hidden;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      /* Canvas Background */
+      #canvas {
+        pointer-events: none;
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+      }
+
+      /* Navbar */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: var(--card-bg);
+        backdrop-filter: blur(24px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .navbar .container-fluid {
+        padding: 1rem 1.5rem;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .logo-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 0.5rem;
+        background: rgba(234, 67, 53, 0.1);
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .nav-links {
+        display: none;
+        gap: 2rem;
+      }
+
+      @media (min-width: 768px) {
+        .nav-links {
+          display: flex;
+        }
+      }
+
+      .nav-links a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: var(--foreground);
+      }
+
+      .navbar-toggler {
+        border: 1px solid rgba(234, 67, 53, 0.5);
+        padding: 0.25rem 0.5rem;
+        border-radius: 8px;
+      }
+
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28239, 68, 68, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      }
+
+      .mobile-menu {
+        display: none;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .mobile-menu.open {
+        display: flex;
+      }
+
+      .mobile-menu a {
+        padding: 0.9rem 1rem;
+        border-radius: 0.75rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+      }
+
+      .mobile-menu a:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      @media (max-width: 767px) {
+        .navbar-collapse {
+          display: none !important;
+        }
+      }
+
+      /* Main Content */
+      .main-content {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 120px 20px 50px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .auth-container {
+        width: 100%;
+        max-width: 440px;
+      }
+
+      .auth-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        padding: 40px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card-glow {
+        position: absolute;
+        right: -4rem;
+        bottom: -4rem;
+        width: 12rem;
+        height: 12rem;
+        border-radius: 50%;
+        background: rgba(234, 67, 53, 0.15);
+        filter: blur(3rem);
+        pointer-events: none;
+      }
+
+      .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .auth-header h1 {
+        color: #fff;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .auth-header p {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .tab-container {
+        display: flex;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 4px;
+        margin-bottom: 30px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .tab-btn {
+        flex: 1;
+        padding: 10px;
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .tab-btn.active {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: #fff;
+        box-shadow: 0 0 20px hsla(0, 72%, 58%, 0.3);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .form-row {
+        display: flex;
+        gap: 12px;
+      }
+
+      .form-half {
+        flex: 1;
+      }
+
+      .form-label {
+        display: block;
+        color: #e0e0e0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #fff;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0 3px rgba(234, 67, 53, 0.1);
+      }
+
+      .form-control::placeholder {
+        color: #666;
+      }
+
+      .form-control.error {
+        border-color: var(--primary);
+        background: rgba(234, 67, 53, 0.05);
+      }
+
+      .form-control.success {
+        border-color: #22c55e;
+        background: rgba(34, 197, 94, 0.05);
+      }
+
+      .error-message {
+        color: var(--primary);
+        font-size: 0.8rem;
+        margin-top: 4px;
+        display: none;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      .password-strength {
+        margin-top: 8px;
+        display: none;
+      }
+
+      .password-strength.show {
+        display: block;
+      }
+
+      .strength-bar {
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.1);
+        margin-bottom: 4px;
+        overflow: hidden;
+      }
+
+      .strength-fill {
+        height: 100%;
+        width: 0%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+      }
+
+      .strength-fill.weak {
+        width: 33%;
+        background: var(--primary);
+      }
+
+      .strength-fill.medium {
+        width: 66%;
+        background: var(--warning);
+      }
+
+      .strength-fill.strong {
+        width: 100%;
+        background: var(--success);
+      }
+
+      .strength-text {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      .forgot-link {
+        display: block;
+        text-align: right;
+        color: var(--primary);
+        font-size: 0.9rem;
+        text-decoration: none;
+        margin-top: 8px;
+        margin-bottom: 20px;
+        transition: color 0.3s;
+        position: relative;
+        z-index: 1;
+      }
+
+      .forgot-link:hover {
+        color: var(--accent);
+      }
+
+      .btn-submit {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 20px hsla(0, 72%, 58%, 0.3);
+        position: relative;
+        z-index: 1;
+      }
+
+      .btn-submit:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px hsla(0, 72%, 58%, 0.5);
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        margin: 25px 0;
+        color: #666;
+        font-size: 0.85rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .divider span {
+        padding: 0 15px;
+      }
+
+      .social-login {
+        display: flex;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .btn-social {
+        flex: 1;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        text-decoration: none;
+      }
+
+      .btn-social:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        transform: translateY(-2px);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      /* Floating blobs */
+      .blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(120px);
+        animation: float 6s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .blob-1 {
+        top: 20%;
+        left: 10%;
+        width: 20rem;
+        height: 20rem;
+        background: rgba(234, 67, 53, 0.15);
+      }
+
+      .blob-2 {
+        bottom: 20%;
+        right: 10%;
+        width: 24rem;
+        height: 24rem;
+        background: rgba(255, 82, 82, 0.15);
+        animation-delay: 2s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-40px) scale(1.05);
+        }
+      }
+
+      /* Mobile Responsive */
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+
+        .auth-card {
+          padding: 30px 20px;
+        }
+
+        .auth-header h1 {
+          font-size: 1.75rem;
+        }
+
+        .main-content {
+          padding: 100px 15px 30px;
+        }
+
+        .blob {
+          display: none;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .auth-card {
+          padding: 25px 15px;
+        }
+
+        .auth-header h1 {
+          font-size: 1.5rem;
+        }
+
+        .social-login {
+          flex-direction: column;
+        }
+
+        .form-row {
+          flex-direction: column;
+          gap: 0;
+        }
+
+        .form-half {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Canvas Background -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Floating Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <a class="logo" href="index.html">
+          <div class="logo-icon">
+            <i class="fas fa-capsules" style="color: #ef4444; font-size: 20px;"></i>
+          </div>
+          <span class="gradient-text">MedRed</span>
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          id="menuBtn"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <div class="nav-links mx-auto">
+            <a href="index.html">Dashboard</a>
+            <a href="#reminders">Reminders</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mobile Menu -->
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Dashboard</a>
+        <a href="#reminders">Reminders</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="auth-container">
+        <div class="auth-card">
+          <div class="card-glow"></div>
+          
+          <div class="auth-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to continue to MedRed</p>
+          </div>
+
+          <div class="tab-container">
+            <button class="tab-btn active" data-tab="signin">Sign In</button>
+            <button class="tab-btn" data-tab="signup">Sign Up</button>
+          </div>
+
+          <!-- Sign In Form -->
+          <div class="tab-content active" id="signin">
+            <form id="loginForm">
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+
+              <a href="#" class="forgot-link">Forgot your password?</a>
+
+              <button type="submit" class="btn-submit">Sign In</button>
+
+              <div class="divider">
+                <span>or continue with</span>
+              </div>
+
+              <div class="social-login">
+                <a href="#" class="btn-social" id="googleLogin">
+                  <i class="fa-brands fa-google"></i>
+                  Google
+                </a>
+              </div>
+            </form>
+          </div>
+
+          <!-- Sign Up Form -->
+          <div class="tab-content" id="signup">
+            <form id="signupForm">
+              <div class="form-row">
+                <div class="form-group form-half">
+                  <label class="form-label">First Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="John"
+                    required
+                  />
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="input-wrapper">
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        placeholder="••••••••" 
-                        required
-                    >
-                    <span class="password-toggle" id="togglePassword">👁️</span>
+                <div class="form-group form-half">
+                  <label class="form-label">Last Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Doe"
+                    required
+                  />
                 </div>
-            </div>
+              </div>
 
-            <div class="remember-forgot">
-                <label class="remember-me">
-                    <input type="checkbox" id="remember">
-                    <span>Remember me</span>
-                </label>
-                <a href="#" class="forgot-link">Forgot password?</a>
-            </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
 
-            <button type="submit" class="login-btn">Log In</button>
-        </form>
+              <div class="form-group">
+                <label class="form-label">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="Create a password"
+                  required
+                />
+              </div>
 
-        <div class="divider">
-            <span>OR</span>
+              <button type="submit" class="btn-submit">Create Account</button>
+
+              <div class="divider">
+                <span>or continue with</span>
+              </div>
+
+              <div class="social-login">
+                <a href="#" class="btn-social" id="googleSignup">
+                  <i class="fa-brands fa-google"></i>
+                  Google
+                </a>
+              </div>
+            </form>
+          </div>
         </div>
-
-        <div class="links">
-            <div>New user? <a href="/register">Create an account</a></div>
-        </div>
+      </div>
     </div>
 
-    <script src="/static/login.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const API_BASE = "https://hackathon-pflh.onrender.com";
+
+      // Mobile menu toggle
+      const menuBtn = document.getElementById("menuBtn");
+      const mobileMenu = document.getElementById("mobileMenu");
+
+      menuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("open");
+      });
+
+      // Tab Switching
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const tab = btn.dataset.tab;
+          document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+          document.querySelectorAll(".tab-content").forEach((c) => c.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById(tab).classList.add("active");
+        });
+      });
+
+      // Signup
+      document.getElementById("signupForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const inputs = e.target.querySelectorAll("input");
+        const firstName = inputs[0].value;
+        const lastName = inputs[1].value;
+        const name = `${firstName} ${lastName}`;
+        const email = inputs[2].value;
+        const password = inputs[3].value;
+
+        try {
+          const res = await fetch(`${API_BASE}/users/signup`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password }),
+          });
+          if (!res.ok) throw new Error("Signup failed");
+          alert("✅ Signup successful! Please login now.");
+          document.querySelector('[data-tab="signin"]').click();
+        } catch (err) {
+          alert("❌ Signup Error: " + err.message);
+        }
+      });
+
+      // Login
+      document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const inputs = e.target.querySelectorAll("input");
+        const email = inputs[0].value;
+        const password = inputs[1].value;
+
+        try {
+          const res = await fetch(`${API_BASE}/users/login`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          if (!res.ok) throw new Error("Login failed");
+
+          alert("✅ Login successful!");
+          window.location.href = "index.html";
+        } catch (err) {
+          alert("❌ Login Error: " + err.message);
+        }
+      });
+
+      // Google Login / Signup
+      document.getElementById("googleLogin").addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = `${API_BASE}/auth/google/login`;
+      });
+      document.getElementById("googleSignup").addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = `${API_BASE}/auth/google/login`;
+      });
+
+      // Canvas Animation
+      function n(e) {
+        this.init(e || {});
+      }
+      n.prototype = {
+        init: function (e) {
+          this.phase = e.phase || 0;
+          this.offset = e.offset || 0;
+          this.frequency = e.frequency || 0.001;
+          this.amplitude = e.amplitude || 1;
+        },
+        update: function () {
+          return (
+            (this.phase += this.frequency),
+            (window.canvasE = this.offset + Math.sin(this.phase) * this.amplitude)
+          );
+        },
+        value: function () {
+          return window.canvasE;
+        },
+      };
+
+      function Line(e) {
+        this.init(e || {});
+      }
+
+      Line.prototype = {
+        init: function (e) {
+          this.spring = e.spring + 0.1 * Math.random() - 0.05;
+          this.friction = window.E.friction + 0.01 * Math.random() - 0.005;
+          this.nodes = [];
+          for (var t, n = 0; n < window.E.size; n++) {
+            t = new Node();
+            t.x = window.pos.x;
+            t.y = window.pos.y;
+            this.nodes.push(t);
+          }
+        },
+        update: function () {
+          let e = this.spring,
+            t = this.nodes[0];
+          t.vx += (window.pos.x - t.x) * e;
+          t.vy += (window.pos.y - t.y) * e;
+          for (var n, i = 0, a = this.nodes.length; i < a; i++)
+            (t = this.nodes[i]),
+              0 < i &&
+                ((n = this.nodes[i - 1]),
+                (t.vx += (n.x - t.x) * e),
+                (t.vy += (n.y - t.y) * e),
+                (t.vx += n.vx * window.E.dampening),
+                (t.vy += n.vy * window.E.dampening)),
+              (t.vx *= this.friction),
+              (t.vy *= this.friction),
+              (t.x += t.vx),
+              (t.y += t.vy),
+              (e *= window.E.tension);
+        },
+        draw: function () {
+          let e,
+            t,
+            n = this.nodes[0].x,
+            i = this.nodes[0].y;
+          window.ctx.beginPath();
+          window.ctx.moveTo(n, i);
+          for (var a = 1, o = this.nodes.length - 2; a < o; a++) {
+            e = this.nodes[a];
+            t = this.nodes[a + 1];
+            n = 0.5 * (e.x + t.x);
+            i = 0.5 * (e.y + t.y);
+            window.ctx.quadraticCurveTo(e.x, e.y, n, i);
+          }
+          e = this.nodes[a];
+          t = this.nodes[a + 1];
+          window.ctx.quadraticCurveTo(e.x, e.y, t.x, t.y);
+          window.ctx.stroke();
+          window.ctx.closePath();
+        },
+      };
+
+      function onMousemove(e) {
+        function o() {
+          window.lines = [];
+          for (let e = 0; e < window.E.trails; e++)
+            window.lines.push(
+              new Line({ spring: 0.45 + (e / window.E.trails) * 0.025 })
+            );
+        }
+        function c(e) {
+          e.touches
+            ? ((window.pos.x = e.touches[0].pageX),
+              (window.pos.y = e.touches[0].pageY))
+            : ((window.pos.x = e.clientX), (window.pos.y = e.clientY)),
+            e.preventDefault();
+        }
+        function l(e) {
+          1 == e.touches.length &&
+            ((window.pos.x = e.touches[0].pageX),
+            (window.pos.y = e.touches[0].pageY));
+        }
+        document.removeEventListener("mousemove", onMousemove),
+          document.removeEventListener("touchstart", onMousemove),
+          document.addEventListener("mousemove", c),
+          document.addEventListener("touchmove", c),
+          document.addEventListener("touchstart", l),
+          c(e),
+          o(),
+          render();
+      }
+
+      function render() {
+        if (window.ctx.running) {
+          window.ctx.globalCompositeOperation = "source-over";
+          window.ctx.clearRect(
+            0,
+            0,
+            window.ctx.canvas.width,
+            window.ctx.canvas.height
+          );
+          window.ctx.globalCompositeOperation = "lighter";
+          window.ctx.strokeStyle =
+            "hsla(" + Math.round(window.f.update()) + ",100%,50%,0.025)";
+          window.ctx.lineWidth = 10;
+          for (var e, t = 0; t < window.E.trails; t++) {
+            (e = window.lines[t]).update();
+            e.draw();
+          }
+          window.ctx.frame++;
+          window.requestAnimationFrame(render);
+        }
+      }
+
+      function resizeCanvas() {
+        window.ctx.canvas.width = window.innerWidth;
+        window.ctx.canvas.height = window.innerHeight;
+      }
+
+      window.canvasE = 0;
+      window.pos = {};
+      window.lines = [];
+      window.E = {
+        debug: true,
+        friction: 0.5,
+        trails: 80,
+        size: 50,
+        dampening: 0.025,
+        tension: 0.99,
+      };
+
+      function Node() {
+        this.x = 0;
+        this.y = 0;
+        this.vy = 0;
+        this.vx = 0;
+      }
+
+      function renderCanvas() {
+        window.ctx = document.getElementById("canvas").getContext("2d");
+        if (!window.ctx) return;
+        window.ctx.running = true;
+        window.ctx.frame = 1;
+        window.f = new n({
+          phase: Math.random() * 2 * Math.PI,
+          amplitude: 85,
+          frequency: 0.0015,
+          offset: 285,
+        });
+        document.addEventListener("mousemove", onMousemove);
+        document.addEventListener("touchstart", onMousemove);
+        document.body.addEventListener("orientationchange", resizeCanvas);
+        window.addEventListener("resize", resizeCanvas);
+        window.addEventListener("focus", () => {
+          if (!window.ctx.running) {
+            window.ctx.running = true;
+            render();
+          }
+        });
+        window.addEventListener("blur", () => {
+          window.ctx.running = true;
+        });
+        resizeCanvas();
+      }
+
+      // Initialize canvas when page loads
+      window.addEventListener("load", renderCanvas);
+    </script>
+  </body>
 </html>

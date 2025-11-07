@@ -47,8 +47,13 @@
       <a href="/Reminders">
         <i data-lucide="bell"></i> Reminders
       </a>
+      
       <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+        {% if user %}
+        <a href="/api/logout" class="btn btn-primary" style="flex: 1; justify-content: center;">Logout</a>
+        {% else %}
         <a href="/login" class="btn btn-primary" style="flex: 1; justify-content: center;">Sign In/Sign Up</a>
+        {% endif %}
       </div>
     </div>
   </nav>

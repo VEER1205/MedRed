@@ -1,159 +1,755 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedRed - Medicine Reminders</title>
-    <link rel="stylesheet" href="/static/reminder.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>MedRed • Reminders</title>
+  <style>
+    :root{
+      --bg:#0d1016;
+      --card-glass:rgba(21,25,36,.86);
+      --border:rgba(255,255,255,.08);
+      --text:#f3f5f7;
+      --muted:#9aa3b2;
+      --brand:#dc2626;
+      --brand-2:#b91c1c;
+      --ok:#22c55e;
+      --warn:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;color:var(--text);
+      background:
+        radial-gradient(900px 600px at -10% -10%, rgba(220,38,38,.12), transparent 40%),
+        radial-gradient(700px 500px at 110% 0%, rgba(255,255,255,.04), transparent 35%),
+        linear-gradient(180deg,#0d1016,#0b0d13);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    }
+
+    /* NAV */
+    .navbar{
+      position:sticky;top:0;z-index:10;
+      background:rgba(13,16,22,.7);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-inner{
+      max-width:1120px;margin:0 auto;padding:12px 20px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .brand{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--text)}
+    .logo{
+      width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
+      background:linear-gradient(135deg,#ef4444,var(--brand));color:#fff;
+      box-shadow:0 6px 18px rgba(220,38,38,.35);
+    }
+    .brand-name{font-weight:900;font-size:18px;letter-spacing:.2px}
+    .avatar{
+      width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;font-weight:800;
+    }
+
+    /* CONTAINER */
+    .container{max-width:1120px;margin:0 auto;padding:24px 20px}
+    .header{
+      display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .title{font-size:28px;font-weight:900;letter-spacing:-.02em}
+    .subtitle{color:var(--muted);margin-top:6px}
+
+    /* EKG STRIP */
+    .ekg{
+      position:relative;height:120px;border:1px solid var(--border);border-radius:12px;
+      background:rgba(255,255,255,.02);overflow:hidden;margin-bottom:18px;
+    }
+    .ekg svg{position:absolute;inset:0;width:200%;height:100%}
+    .ekg path{
+      stroke:var(--brand);stroke-width:2.2;fill:none;opacity:.9;
+      filter:drop-shadow(0 0 8px rgba(220,38,38,.35));
+      stroke-dasharray:8 10;
+      animation:dash 2.2s linear infinite;
+    }
+    @keyframes dash{to{stroke-dashoffset:-200}}
+    .ekg-gradient{
+      position:absolute;inset:0;
+      background:linear-gradient(90deg, rgba(220,38,38,.12), transparent 20%, transparent 80%, rgba(220,38,38,.12));
+      pointer-events:none;
+    }
+
+    /* ACTIONS BAR */
+    .bar{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px;
+    }
+    .left, .right{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);color:var(--text);
+      padding:10px 14px;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;
+      transition:background .2s ease, transform .2s ease, border-color .2s ease;
+    }
+    .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
+    .btn-primary{
+      background:linear-gradient(135deg,#ef4444,var(--brand));border-color:rgba(220,38,38,.4);color:#fff;
+    }
+    .seg{
+      display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;
+      background:rgba(255,255,255,.02);
+    }
+    .seg button{
+      padding:8px 12px;background:transparent;border:none;color:var(--muted);font-weight:800;cursor:pointer;
+    }
+    .seg button.active{color:#fff;background:rgba(255,255,255,.06)}
+    .input{
+      padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+      background:#0f1320;color:var(--text);font-weight:700;outline:none;
+    }
+    .input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(220,38,38,.2)}
+
+    /* LIST */
+    .list{display:grid;gap:12px}
+    .card{
+      background:var(--card-glass);border:1px solid var(--border);border-radius:14px;padding:14px;
+      display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+      transition:box-shadow .25s ease, transform .25s ease, border-color .25s ease;
+      animation:fadeUp .25s ease both;
+    }
+    .card:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(0,0,0,.24)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .title-row{display:flex;gap:10px;align-items:center}
+    .pill{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:rgba(220,38,38,.14);color:var(--brand);font-weight:900;border:1px solid rgba(220,38,38,.25)}
+    .name{font-weight:900}
+    .muted{color:var(--muted);font-size:13px}
+    .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;color:var(--muted);font-size:12px}
+    .meta .dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.35);align-self:center}
+    .actions{display:flex;gap:8px;align-items:center}
+    .chip{
+      padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.03);
+      color:var(--muted);font-weight:800;font-size:12px;cursor:pointer;
+    }
+    .chip:hover{background:rgba(255,255,255,.06)}
+    .switch{
+      position:relative;width:42px;height:24px;border-radius:999px;
+      background:rgba(255,255,255,.12);border:1px solid var(--border);cursor:pointer;
+    }
+    .switch input{appearance:none;width:100%;height:100%;margin:0;outline:none}
+    .switch .knob{
+      position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+      background:#fff;transition:left .18s ease, background .2s ease;
+    }
+    .switch.active{background:rgba(34,197,94,.25);border-color:rgba(34,197,94,.4)}
+    .switch.active .knob{left:20px;background:#eafff2}
+
+    .empty{
+      border:1px dashed var(--border);border-radius:14px;padding:24px;text-align:center;color:var(--muted);
+    }
+
+    /* SLIDE-OVER PANEL */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:20}
+    .overlay.open{opacity:1;pointer-events:auto}
+    .panel{
+      position:fixed;top:0;right:-520px;height:100%;width:min(520px,100%);background:var(--card-glass);
+      border-left:1px solid var(--border);box-shadow:-12px 0 30px rgba(0,0,0,.25);z-index:21;
+      transition:right .25s ease;display:flex;flex-direction:column;
+    }
+    .overlay.open + .panel{right:0}
+    .panel-header{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--border)}
+    .panel-title{font-weight:900}
+    .panel-body{padding:16px;display:grid;gap:12px;overflow:auto}
+    .row-field{display:grid;gap:6px}
+    .row-inline{display:flex;gap:8px;flex-wrap:wrap}
+    .label{color:var(--muted);font-size:13px;font-weight:800}
+    .times{display:flex;gap:8px;flex-wrap:wrap}
+    .time-chip{
+      padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.03);font-weight:800;font-size:12px;
+      display:inline-flex;align-items:center;gap:6px;
+    }
+    .time-chip button{background:transparent;border:none;color:var(--muted);cursor:pointer}
+    .days{display:flex;gap:6px;flex-wrap:wrap}
+    .day{
+      width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--muted);font-weight:900;
+      display:grid;place-items:center;cursor:pointer;
+    }
+    .day.active{background:rgba(220,38,38,.14);color:#fff;border-color:rgba(220,38,38,.35)}
+    .panel-footer{padding:16px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+    .select, .textarea{
+      width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0f1320;color:var(--text);font-weight:700;outline:none;
+    }
+    .textarea{min-height:90px;resize:vertical}
+
+    /* TOAST */
+    .toast{position:fixed;right:16px;bottom:16px;z-index:40;display:grid;gap:8px;width:min(320px,calc(100vw - 32px))}
+    .toast .item{
+      background:rgba(15,19,32,.95);border:1px solid var(--border);
+      color:var(--text);padding:10px 12px;border-radius:10px;font-weight:800;
+      box-shadow:0 10px 24px rgba(0,0,0,.25);opacity:0;transform:translateY(6px);
+      animation:toastIn .25s ease forwards;
+    }
+    @keyframes toastIn{to{opacity:1;transform:translateY(0)}}
+
+    @media (max-width:720px){
+      .title{font-size:24px}
+      .bar{align-items:stretch}
+      .right{width:100%}
+      .right .input{flex:1}
+    }
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none !important;transition:none !important}
+      .ekg{display:none}
+    }
+  </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="#" class="navbar-brand">
-                <div class="navbar-logo">+</div>
-                <div class="navbar-text">MedRed</div>
-            </a>
+  <!-- NAV -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <a class="brand" href="/Dashboard">
+        <div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1 16h2v-6h-2v6zm0-8h2V6h-2v4z"/></svg></div>
+        <span class="brand-name">MedRed</span>
+      </a>
+      <div class="avatar" id="navUserAvatar">JD</div>
+    </div>
+  </header>
 
-            <ul class="navbar-menu">
-                <li class="navbar-item">
-                    <a href="/" class="navbar-link">
-                        <span>Home</span>
-                    </a>
-                </li>
-                <li class="navbar-item">
-                    <a href="/Dashboard" class="navbar-link">
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="navbar-item">
-                    <a href="/Reminders" class="navbar-link active">
-                        <span>Reminders</span>
-                    </a>
-                </li>
-            </ul>
-
-            <div class="navbar-user" id="navbarUser">
-                <div class="user-avatar" id="navUserAvatar">JD</div>
-                <div class="user-info">
-                    <div class="user-name" id="navUserName">John Doe</div>
-                    <div class="user-email" id="navUserEmail">john@example.com</div>
-                </div>
-            </div>
-
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container">
-        <div class="page-header">
-            <h1 class="page-title">Medicine Reminders</h1>
-            <p class="page-subtitle">Manage your daily medication schedule</p>
-        </div>
-
-        <div class="content-wrapper">
-            <!-- Reminders List -->
-            <div class="main-section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <div class="section-icon">💊</div>
-                        <span>Your Reminders</span>
-                    </h2>
-                    <button class="btn btn-primary" onclick="openAddModal()">
-                        <span>+</span>
-                        <span>Add Reminder</span>
-                    </button>
-                </div>
-
-                <div class="reminder-list" id="reminderList">
-                    <!-- Reminders will be populated here -->
-                </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Total Reminders Card -->
-                <div class="info-card">
-                    <div class="info-card-title">Total Reminders</div>
-                    <div class="info-card-value" id="totalReminders">0</div>
-                </div>
-
-                <!-- Statistics Card -->
-                <div class="info-card">
-                    <div class="info-card-title">Today's Schedule</div>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span class="stat-label"> Morning</span>
-                            <span class="stat-value" id="morningCount">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label"> Afternoon</span>
-                            <span class="stat-value" id="afternoonCount">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label"> Evening</span>
-                            <span class="stat-value" id="eveningCount">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-label"> Night</span>
-                            <span class="stat-value" id="nightCount">0</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <main class="container">
+    <div class="header">
+      <div>
+        <div class="title">Medicine Reminders</div>
+        <div class="subtitle">Create, schedule, and manage your medication reminders.</div>
+      </div>
+      <div>
+        <button class="btn btn-primary" id="addBtn">➕ Add Reminder</button>
+      </div>
     </div>
 
-    <!-- Add Reminder Modal -->
-    <div class="modal" id="addReminderModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">
-                    <span>Add New Reminder</span>
-                </h3>
-                <button class="close-btn" onclick="closeAddModal()">&times;</button>
-            </div>
+    <!-- EKG STRIP -->
+    <div class="ekg" aria-hidden="true">
+      <svg viewBox="0 0 1200 120">
+        <path d="M0,60 L120,60 L160,60 170,40 180,80 190,20 205,90 220,60 L380,60 L420,60 430,40 440,80 450,20 465,90 480,60 L640,60 L680,60 690,40 700,80 710,20 725,90 740,60 L900,60 L940,60 950,40 960,80 970,20 985,90 1000,60 L1200,60"></path>
+      </svg>
+      <div class="ekg-gradient"></div>
+    </div>
 
-            <form id="reminderForm" onsubmit="addReminder(event)">
-                <div class="form-group">
-                    <label>Medicine Name *</label>
-                    <input type="text" id="medicineName" placeholder="e.g., Aspirin" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Dosage *</label>
-                    <input type="text" id="dosage" placeholder="e.g., 500mg, 2 tablets" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Time(s) *</label>
-                    <div class="time-inputs" id="timeInputs">
-                        <input type="time" class="time-input" required>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px;">
-                    <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <span>+</span>
-                        <span>Add Reminder</span>
-                    </button>
-                </div>
-            </form>
+    <!-- ACTIONS BAR -->
+    <div class="bar">
+      <div class="left">
+        <div class="seg" id="filterSeg">
+          <button data-filter="all" class="active">All</button>
+          <button data-filter="today">Today</button>
+          <button data-filter="active">Active</button>
+          <button data-filter="paused">Paused</button>
         </div>
+      </div>
+      <div class="right">
+        <input id="searchInput" class="input" placeholder="Search medicine, dosage..."/>
+      </div>
     </div>
 
-    <!-- Success Message -->
-    <div class="success-message" id="successMessage">
-        <div class="success-icon">✓</div>
-        <span id="successText"></span>
-    </div>
+    <!-- LIST -->
+    <div id="list" class="list"></div>
+    <div id="emptyState" class="empty" style="display:none">No reminders yet. Click “Add Reminder” to get started.</div>
+  </main>
 
-    <script src="/static/reminder.js"></script>
+  <!-- SLIDE-OVER PANEL -->
+  <div id="overlay" class="overlay"></div>
+  <aside id="panel" class="panel" aria-hidden="true">
+    <div class="panel-header">
+      <div class="panel-title" id="panelTitle">Add Reminder</div>
+      <button class="btn" id="closePanelBtn">✕</button>
+    </div>
+    <div class="panel-body">
+      <div class="row-field">
+        <label class="label">Medicine Name</label>
+        <input id="f_name" class="input" placeholder="e.g., Metformin"/>
+      </div>
+      <div class="row-field">
+        <label class="label">Dosage</label>
+        <input id="f_dose" class="input" placeholder="e.g., 500 mg"/>
+      </div>
+      <div class="row-field">
+        <label class="label">Times per day</label>
+        <div class="row-inline">
+          <input id="f_time" type="time" class="input"/>
+          <button id="addTimeBtn" class="btn">Add time</button>
+        </div>
+        <div id="timeChips" class="times"></div>
+      </div>
+      <div class="row-field">
+        <label class="label">Repeat</label>
+        <div class="row-inline">
+          <button id="dailyBtn" class="btn">Daily</button>
+          <span class="muted">or choose specific days</span>
+        </div>
+        <div id="days" class="days"></div>
+      </div>
+      <div class="row-field">
+        <label class="label">Start / End (optional)</label>
+        <div class="row-inline">
+          <input id="f_start" type="date" class="input"/>
+          <input id="f_end" type="date" class="input"/>
+        </div>
+      </div>
+      <div class="row-field">
+        <label class="label">Pre-notify</label>
+        <select id="f_prenotify" class="select">
+          <option value="0">At time</option>
+          <option value="5">5 min before</option>
+          <option value="10" selected>10 min before</option>
+          <option value="15">15 min before</option>
+          <option value="30">30 min before</option>
+        </select>
+      </div>
+      <div class="row-field">
+        <label class="label">Notes</label>
+        <textarea id="f_notes" class="textarea" placeholder="Optional notes (before/after food, etc.)"></textarea>
+      </div>
+      <div class="row-field">
+        <label class="label">Active</label>
+        <label class="switch" id="f_activeSwitch">
+          <input type="checkbox" id="f_active">
+          <div class="knob"></div>
+        </label>
+      </div>
+      <div class="row-field">
+        <div class="label">Schedule preview</div>
+        <div id="preview" class="muted"></div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button class="btn" id="cancelBtn">Cancel</button>
+      <button class="btn btn-primary" id="saveBtn">Save Reminder</button>
+    </div>
+  </aside>
+
+  <!-- TOASTS -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // ---- Storage helpers ----
+    const LS_KEY = 'medred_reminders';
+    const deep = o => JSON.parse(JSON.stringify(o));
+    const saveStore = (arr)=> localStorage.setItem(LS_KEY, JSON.stringify(arr));
+    const loadStore = ()=> {
+      try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { return []; }
+    };
+
+    // ---- State ----
+    let reminders = loadStore();
+    if (!reminders.length) {
+      reminders = [
+        mkRem('Amoxicillin','500 mg',['08:00','20:00'],{daily:true}, {notes:'After food'}),
+        mkRem('Ibuprofen','200 mg',['13:00'],{days:[1,3,5]},{}),
+        mkRem('Lisinopril','10 mg',['21:00'],{daily:true},{}),
+      ];
+      saveStore(reminders);
+    }
+    let filter = 'all';
+    let searchTerm = '';
+    let editingId = null;
+
+    // ---- Elements ----
+    const listEl = document.getElementById('list');
+    const emptyEl = document.getElementById('emptyState');
+    const avatar = document.getElementById('navUserAvatar');
+
+    // Filters
+    document.getElementById('filterSeg').addEventListener('click', (e)=>{
+      if (e.target.tagName !== 'BUTTON') return;
+      document.querySelectorAll('#filterSeg button').forEach(b=>b.classList.remove('active'));
+      e.target.classList.add('active');
+      filter = e.target.dataset.filter;
+      renderList();
+    });
+
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e)=>{
+      searchTerm = e.target.value.trim().toLowerCase();
+      renderList();
+    });
+
+    // Add button
+    document.getElementById('addBtn').addEventListener('click', ()=> openPanel());
+
+    // Panel controls
+    const overlay = document.getElementById('overlay');
+    const panel = document.getElementById('panel');
+    document.getElementById('closePanelBtn').addEventListener('click', closePanel);
+    document.getElementById('cancelBtn').addEventListener('click', closePanel);
+    overlay.addEventListener('click', closePanel);
+    document.getElementById('saveBtn').addEventListener('click', onSaveReminder);
+
+    const fName = document.getElementById('f_name');
+    const fDose = document.getElementById('f_dose');
+    const fTime = document.getElementById('f_time');
+    const fStart = document.getElementById('f_start');
+    const fEnd = document.getElementById('f_end');
+    const fPrenotify = document.getElementById('f_prenotify');
+    const fNotes = document.getElementById('f_notes');
+    const fActive = document.getElementById('f_active');
+    const fActiveSwitch = document.getElementById('f_activeSwitch');
+    const timeChips = document.getElementById('timeChips');
+    const daysWrap = document.getElementById('days');
+    const dailyBtn = document.getElementById('dailyBtn');
+    const preview = document.getElementById('preview');
+    const panelTitle = document.getElementById('panelTitle');
+
+    fActiveSwitch.addEventListener('click', ()=> {
+      fActive.checked = !fActive.checked;
+      fActiveSwitch.classList.toggle('active', fActive.checked);
+    });
+    document.getElementById('addTimeBtn').addEventListener('click', addTimeChip);
+    fTime.addEventListener('keydown', (e)=> { if(e.key === 'Enter'){ e.preventDefault(); addTimeChip(); }});
+    dailyBtn.addEventListener('click', ()=> {
+      // toggle all days on/off
+      const activeCount = daysSelected().length;
+      if (activeCount === 7) {
+        // clear (switch to none)
+        daysWrap.querySelectorAll('.day').forEach(d=>d.classList.remove('active'));
+        dailyBtn.textContent = 'Daily';
+      } else {
+        // set all
+        daysWrap.querySelectorAll('.day').forEach(d=>d.classList.add('active'));
+        dailyBtn.textContent = 'Daily ✓';
+      }
+      updatePreview();
+    });
+
+    initDays();
+
+    // ---- Rendering ----
+    function renderList(){
+      const data = reminders
+        .filter(r => {
+          if (filter === 'today' && !occursToday(r)) return false;
+          if (filter === 'active' && !r.active) return false;
+          if (filter === 'paused' && r.active) return false;
+          return true;
+        })
+        .filter(r => {
+          if (!searchTerm) return true;
+          const hay = (r.name + ' ' + r.dose + ' ' + (r.notes||'')).toLowerCase();
+          return hay.includes(searchTerm);
+        });
+
+      listEl.innerHTML = data.map(r => cardHTML(r)).join('');
+      emptyEl.style.display = data.length ? 'none' : 'block';
+
+      // Bind actions
+      listEl.querySelectorAll('[data-action]').forEach(btn => {
+        btn.addEventListener('click', onCardAction);
+      });
+      listEl.querySelectorAll('.switch').forEach(sw => {
+        sw.addEventListener('click', onToggleActive);
+      });
+    }
+
+    function cardHTML(r){
+      const schedule = scheduleSummary(r);
+      const next = nextDue(r);
+      const activeCls = r.active ? 'active' : '';
+      return `
+        <div class="card" data-id="${r.id}">
+          <div>
+            <div class="title-row">
+              <div class="pill">💊</div>
+              <div>
+                <div class="name">${escape(r.name)} • ${escape(r.dose||'')}</div>
+                <div class="muted">${escape(schedule)}</div>
+              </div>
+            </div>
+            <div class="meta">
+              <div>Next: ${escape(next || '—')}</div>
+              <div class="dot"></div>
+              <div>${r.notes ? escape(r.notes) : 'No notes'}</div>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="chip" data-action="snooze">Snooze +10m</button>
+            <button class="chip" data-action="done">Mark Done</button>
+            <button class="chip" data-action="edit">Edit</button>
+            <button class="chip" data-action="delete">Delete</button>
+            <label class="switch ${activeCls}">
+              <input type="checkbox" ${r.active ? 'checked':''}>
+              <div class="knob"></div>
+            </label>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- Card Actions ----
+    function onCardAction(e){
+      const btn = e.currentTarget;
+      const action = btn.dataset.action;
+      const id = btn.closest('.card')?.dataset.id;
+      const r = reminders.find(x => x.id === id);
+      if (!r) return;
+
+      if (action === 'snooze'){
+        toast('Snoozed 10 minutes ⏱️');
+      } else if (action === 'done'){
+        r.lastTaken = new Date().toISOString();
+        saveStore(reminders);
+        renderList();
+        toast('Marked done 💊');
+      } else if (action === 'edit'){
+        openPanel(r);
+      } else if (action === 'delete'){
+        if (confirm(`Delete reminder "${r.name}"?`)){
+          reminders = reminders.filter(x => x.id !== id);
+          saveStore(reminders);
+          renderList();
+          toast('Reminder deleted');
+        }
+      }
+    }
+
+    function onToggleActive(e){
+      const card = e.currentTarget.closest('.card');
+      const id = card?.dataset.id;
+      const r = reminders.find(x => x.id === id);
+      if (!r) return;
+      r.active = !r.active;
+      e.currentTarget.classList.toggle('active', r.active);
+      saveStore(reminders);
+      renderList();
+      toast(r.active ? 'Reminder activated' : 'Reminder paused');
+    }
+
+    // ---- Panel (Add/Edit) ----
+    function openPanel(rem=null){
+      overlay.classList.add('open');
+      panel.setAttribute('aria-hidden', 'false');
+
+      if (rem){
+        panelTitle.textContent = 'Edit Reminder';
+        editingId = rem.id;
+        fName.value = rem.name || '';
+        fDose.value = rem.dose || '';
+        fStart.value = rem.startDate || '';
+        fEnd.value = rem.endDate || '';
+        fPrenotify.value = String(rem.preNotify || 10);
+        fNotes.value = rem.notes || '';
+        fActive.checked = !!rem.active;
+        fActiveSwitch.classList.toggle('active', fActive.checked);
+
+        // Times
+        renderTimes(rem.times || []);
+
+        // Days
+        daysWrap.querySelectorAll('.day').forEach(d=>d.classList.remove('active'));
+        if (rem.daily){
+          daysWrap.querySelectorAll('.day').forEach(d=>d.classList.add('active'));
+          dailyBtn.textContent = 'Daily ✓';
+        } else {
+          (rem.days||[]).forEach(idx => {
+            const btn = daysWrap.querySelector(`[data-day="${idx}"]`);
+            if (btn) btn.classList.add('active');
+          });
+          dailyBtn.textContent = (daysSelected().length === 7) ? 'Daily ✓' : 'Daily';
+        }
+      } else {
+        panelTitle.textContent = 'Add Reminder';
+        editingId = null;
+        fName.value = '';
+        fDose.value = '';
+        fStart.value = '';
+        fEnd.value = '';
+        fPrenotify.value = '10';
+        fNotes.value = '';
+        fActive.checked = true;
+        fActiveSwitch.classList.add('active');
+        renderTimes([]);
+        daysWrap.querySelectorAll('.day').forEach(d=>d.classList.remove('active'));
+        dailyBtn.textContent = 'Daily';
+      }
+      updatePreview();
+    }
+
+    function closePanel(){
+      overlay.classList.remove('open');
+      panel.setAttribute('aria-hidden','true');
+    }
+
+    function onSaveReminder(){
+      const name = fName.value.trim();
+      if (!name){ toast('Enter medicine name'); return; }
+      const dose = fDose.value.trim();
+      const times = currentTimes();
+      if (!times.length){ toast('Add at least one time'); return; }
+      const days = daysSelected();
+      const daily = days.length === 7;
+      const startDate = fStart.value || null;
+      const endDate = fEnd.value || null;
+      const notes = fNotes.value.trim();
+      const preNotify = parseInt(fPrenotify.value || '0',10);
+      const active = !!fActive.checked;
+
+      const payload = { name, dose, times, daily, days, startDate, endDate, notes, preNotify, active };
+
+      if (editingId){
+        const idx = reminders.findIndex(r => r.id === editingId);
+        if (idx > -1){ reminders[idx] = { ...reminders[idx], ...payload }; }
+        toast('Reminder saved ✅');
+      } else {
+        reminders.unshift({ id: rid(), ...payload });
+        toast('Reminder added ✅');
+      }
+      saveStore(reminders);
+      renderList();
+      closePanel();
+    }
+
+    // ---- Times chips ----
+    function addTimeChip(){
+      const val = fTime.value;
+      if (!val) return;
+      const t = normalizeTime(val);
+      const exists = Array.from(timeChips.querySelectorAll('.time-chip')).some(ch => ch.dataset.t === t);
+      if (exists) { toast('Time already added'); return; }
+      const chip = chipHTML(t);
+      timeChips.insertAdjacentHTML('beforeend', chip);
+      bindChipRemove();
+      sortChips();
+      updatePreview();
+    }
+    function chipHTML(t){
+      return `<span class="time-chip" data-t="${t}">${to12h(t)} <button type="button" data-remove="${t}">✕</button></span>`;
+    }
+    function bindChipRemove(){
+      timeChips.querySelectorAll('[data-remove]').forEach(btn=>{
+        btn.onclick = () => {
+          timeChips.querySelector(`[data-t="${btn.dataset.remove}"]`)?.remove();
+          updatePreview();
+        };
+      });
+    }
+    function renderTimes(arr){
+      timeChips.innerHTML = '';
+      (arr || []).sort().forEach(t => {
+        timeChips.insertAdjacentHTML('beforeend', chipHTML(t));
+      });
+      bindChipRemove();
+    }
+    function currentTimes(){
+      return Array.from(timeChips.querySelectorAll('.time-chip')).map(ch => ch.dataset.t).sort();
+    }
+    function sortChips(){
+      const chips = Array.from(timeChips.children).sort((a,b)=> a.dataset.t.localeCompare(b.dataset.t));
+      timeChips.innerHTML = '';
+      chips.forEach(ch => timeChips.appendChild(ch));
+    }
+
+    // ---- Days ----
+    function initDays(){
+      const names = ['S','M','T','W','T','F','S'];
+      daysWrap.innerHTML = names.map((n,i)=> `<button class="day" data-day="${i}">${n}</button>`).join('');
+      daysWrap.querySelectorAll('.day').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          btn.classList.toggle('active');
+          dailyBtn.textContent = (daysSelected().length === 7) ? 'Daily ✓' : 'Daily';
+          updatePreview();
+        });
+      });
+    }
+    function daysSelected(){
+      return Array.from(daysWrap.querySelectorAll('.day.active')).map(b => parseInt(b.dataset.day,10));
+    }
+
+    // ---- Preview ----
+    function updatePreview(){
+      const times = currentTimes();
+      const days = daysSelected();
+      const daily = days.length === 7;
+      preview.textContent = buildSummary({ times, daily, days });
+    }
+
+    // ---- Utils: Time/Format/Summary ----
+    function mkRem(name,dose,times,sched,extra){
+      const daily = !!sched.daily;
+      const days = sched.days || (daily ? [0,1,2,3,4,5,6] : []);
+      return {
+        id: rid(), name, dose, times, daily, days,
+        startDate: null, endDate: null, notes: extra.notes || '',
+        preNotify: 10, active: true
+      };
+    }
+    function occursToday(r){
+      const today = new Date().getDay(); // 0 Sun .. 6 Sat
+      return r.daily || (r.days||[]).includes(today);
+    }
+    function nextDue(r){
+      if (!r.active || !r.times?.length) return '';
+      const now = new Date();
+      const today = now.getDay();
+      for (let off=0; off<7; off++){
+        const d = (today + off) % 7;
+        if (r.daily || (r.days||[]).includes(d)){
+          const times = deep(r.times).sort();
+          if (off === 0){
+            // find next time today
+            const after = times.find(t => toMinutes(t) > (now.getHours()*60 + now.getMinutes()));
+            if (after) return offLabel(off) + ' ' + to12h(after);
+          } else {
+            return offLabel(off) + ' ' + to12h(times[0]);
+          }
+        }
+      }
+      return '';
+    }
+    function offLabel(off){
+      if (off===0) return 'Today';
+      if (off===1) return 'Tomorrow';
+      const day = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][(new Date().getDay()+off)%7];
+      return day;
+    }
+    function scheduleSummary(r){
+      const times = (r.times||[]).slice().sort().map(to12h).join(', ');
+      if (r.daily || (r.days||[]).length===7) return `Daily at ${times}`;
+      const dayNames = (r.days||[]).map(i=>['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][i]).join(', ');
+      return `${dayNames} at ${times}`;
+    }
+    function buildSummary({times, daily, days}){
+      if (!times.length) return '—';
+      if (daily || days.length===7) return `Daily at ${times.map(to12h).join(', ')}`;
+      const dayNames = days.map(i=>['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][i]).join(', ');
+      return `${dayNames} at ${times.map(to12h).join(', ')}`;
+    }
+    function normalizeTime(v){ // input type="time" -> HH:MM
+      const [h,m] = v.split(':'); return `${h.padStart(2,'0')}:${m.padStart(2,'0')}`;
+    }
+    function to12h(t){
+      let [h,m] = t.split(':').map(Number);
+      const mer = h>=12 ? 'PM' : 'AM';
+      h = h%12 || 12;
+      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')} ${mer}`;
+    }
+    function toMinutes(t){ const [h,m]=t.split(':').map(Number); return h*60+m; }
+    function escape(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function rid(){ return Math.random().toString(36).slice(2); }
+
+    // ---- Toasts ----
+    const toastEl = document.getElementById('toast');
+    function toast(msg){
+      const el = document.createElement('div');
+      el.className = 'item';
+      el.textContent = msg;
+      toastEl.appendChild(el);
+      setTimeout(()=>{
+        el.style.transition='opacity .25s ease, transform .25s ease';
+        el.style.opacity='0'; el.style.transform='translateY(6px)';
+        setTimeout(()=> el.remove(), 220);
+      }, 1800);
+    }
+
+    // ---- Init page ----
+    (function init(){
+      const user = { fname:'John', lname:'Doe' };
+      document.getElementById('navUserAvatar').textContent = (user.fname[0]+user.lname[0]).toUpperCase();
+      renderList();
+    })();
+  </script>
 </body>
-</html>
+</html> 

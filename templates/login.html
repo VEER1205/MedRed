@@ -258,18 +258,44 @@
       .form-control {
         width: 100%;
         padding: 12px 16px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(30, 30, 30, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 8px;
         color: #ffffff;
         font-size: 0.95rem;
         transition: all 0.3s ease;
       }
 
+      .password-input-wrapper {
+        position: relative;
+      }
+
+      .password-input-wrapper .form-control {
+        padding-right: 45px;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #888888;
+        cursor: pointer;
+        padding: 4px 8px;
+        transition: color 0.3s;
+        z-index: 2;
+      }
+
+      .password-toggle:hover {
+        color: #ffffff;
+      }
+
       .form-control:focus {
         outline: none;
         border-color: var(--primary);
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(30, 30, 30, 0.95);
         box-shadow: 0 0 0 3px rgba(234, 67, 53, 0.1);
       }
 
@@ -627,14 +653,19 @@
 
               <div class="form-group">
                 <label class="form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="loginPassword"
-                  name="password"
-                  placeholder="Enter your password"
-                  required
-                />
+                <div class="password-input-wrapper">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="loginPassword"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <button type="button" class="password-toggle" onclick="togglePassword('loginPassword', this)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
                 <div class="error-message" id="loginPasswordError"></div>
               </div>
 
@@ -698,13 +729,18 @@
 
               <div class="form-group">
                 <label class="form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="signupPassword"
-                  placeholder="Create a password"
-                  required
-                />
+                <div class="password-input-wrapper">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="signupPassword"
+                    placeholder="Create a password"
+                    required
+                  />
+                  <button type="button" class="password-toggle" onclick="togglePassword('signupPassword', this)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
                 <div class="password-strength" id="passwordStrength">
                   <div class="strength-bar">
                     <div class="strength-fill" id="strengthFill"></div>
@@ -712,6 +748,23 @@
                   <div class="strength-text" id="strengthText"></div>
                 </div>
                 <div class="error-message" id="signupPasswordError"></div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <div class="password-input-wrapper">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="confirmPassword"
+                    placeholder="Confirm your password"
+                    required
+                  />
+                  <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword', this)">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+                <div class="error-message" id="confirmPasswordError"></div>
               </div>
 
               <button type="submit" class="btn-submit" id="signupBtn">Create Account</button>
@@ -760,7 +813,24 @@
       }
 
       function validateName(name) {
-        return name.trim().length >= 2;
+        const trimmed = name.trim();
+        // Must be at least 2 characters and contain only letters, spaces, hyphens, and apostrophes
+        return trimmed.length >= 2 && /^[a-zA-Z\s'-]+$/.test(trimmed);
+      }
+
+      function togglePassword(inputId, button) {
+        const input = document.getElementById(inputId);
+        const icon = button.querySelector('i');
+        
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          input.type = 'password';
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
       }
 
       function showError(inputId, errorId, message) {
@@ -892,19 +962,20 @@
         const lastName = document.getElementById('signupLastName').value.trim();
         const email = document.getElementById('signupEmail').value.trim();
         const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
         const signupBtn = document.getElementById('signupBtn');
 
         let hasError = false;
 
         if (!validateName(firstName)) {
-          showError('signupFirstName', 'signupFirstNameError', 'First name must be at least 2 characters');
+          showError('signupFirstName', 'signupFirstNameError', 'First name must be at least 2 characters and contain only letters');
           hasError = true;
         } else {
           clearError('signupFirstName', 'signupFirstNameError');
         }
 
         if (!validateName(lastName)) {
-          showError('signupLastName', 'signupLastNameError', 'Last name must be at least 2 characters');
+          showError('signupLastName', 'signupLastNameError', 'Last name must be at least 2 characters and contain only letters');
           hasError = true;
         } else {
           clearError('signupLastName', 'signupLastNameError');
@@ -922,6 +993,13 @@
           hasError = true;
         } else {
           clearError('signupPassword', 'signupPasswordError');
+        }
+
+        if (password !== confirmPassword) {
+          showError('confirmPassword', 'confirmPasswordError', 'Passwords do not match');
+          hasError = true;
+        } else {
+          clearError('confirmPassword', 'confirmPasswordError');
         }
 
         if (hasError) return;
@@ -974,7 +1052,7 @@
       });
 
       // Clear errors on input
-      ['loginEmail', 'loginPassword', 'signupFirstName', 'signupLastName', 'signupEmail', 'signupPassword'].forEach(fieldId => {
+      ['loginEmail', 'loginPassword', 'signupFirstName', 'signupLastName', 'signupEmail', 'signupPassword', 'confirmPassword'].forEach(fieldId => {
         const input = document.getElementById(fieldId);
         if (input) {
           input.addEventListener('input', () => {

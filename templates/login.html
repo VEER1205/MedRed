@@ -45,7 +45,6 @@
         position: relative;
       }
 
-      /* Canvas Background */
       #canvas {
         pointer-events: none;
         position: fixed;
@@ -53,7 +52,6 @@
         z-index: 0;
       }
 
-      /* Navbar */
       .navbar {
         position: fixed;
         top: 0;
@@ -150,13 +148,6 @@
         background: rgba(255, 255, 255, 0.1);
       }
 
-      @media (max-width: 767px) {
-        .navbar-collapse {
-          display: none !important;
-        }
-      }
-
-      /* Main Content */
       .main-content {
         min-height: 100vh;
         display: flex;
@@ -270,7 +261,7 @@
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 8px;
-        color: #fff;
+        color: #ffffff;
         font-size: 0.95rem;
         transition: all 0.3s ease;
       }
@@ -283,7 +274,7 @@
       }
 
       .form-control::placeholder {
-        color: #666;
+        color: #888888;
       }
 
       .form-control.error {
@@ -299,12 +290,24 @@
       .error-message {
         color: var(--primary);
         font-size: 0.8rem;
-        margin-top: 4px;
+        margin-top: 6px;
         display: none;
+        animation: slideDown 0.3s ease;
       }
 
       .error-message.show {
         display: block;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       .password-strength {
@@ -333,17 +336,17 @@
 
       .strength-fill.weak {
         width: 33%;
-        background: var(--primary);
+        background: #ef4444;
       }
 
       .strength-fill.medium {
         width: 66%;
-        background: var(--warning);
+        background: #f59e0b;
       }
 
       .strength-fill.strong {
         width: 100%;
-        background: var(--success);
+        background: #22c55e;
       }
 
       .strength-text {
@@ -384,10 +387,36 @@
         z-index: 1;
       }
 
-      .btn-submit:hover {
+      .btn-submit:hover:not(:disabled) {
         opacity: 0.9;
         transform: translateY(-2px);
         box-shadow: 0 0 30px hsla(0, 72%, 58%, 0.5);
+      }
+
+      .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .btn-submit.loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        margin-left: -10px;
+        margin-top: -10px;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spinner 0.6s linear infinite;
+      }
+
+      @keyframes spinner {
+        to {
+          transform: rotate(360deg);
+        }
       }
 
       .divider {
@@ -451,7 +480,6 @@
         display: block;
       }
 
-      /* Floating blobs */
       .blob {
         position: fixed;
         border-radius: 50%;
@@ -488,7 +516,6 @@
         }
       }
 
-      /* Mobile Responsive */
       @media (max-width: 768px) {
         .nav-links {
           display: none;
@@ -536,14 +563,10 @@
     </style>
   </head>
   <body>
-    <!-- Canvas Background -->
     <canvas id="canvas"></canvas>
-
-    <!-- Floating Blobs -->
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
       <div class="container-fluid">
         <a class="logo" href="index.html">
@@ -553,11 +576,7 @@
           <span class="gradient-text">MedRed</span>
         </a>
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          id="menuBtn"
-        >
+        <button class="navbar-toggler" type="button" id="menuBtn">
           <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -569,14 +588,12 @@
         </div>
       </div>
       
-      <!-- Mobile Menu -->
       <div class="mobile-menu" id="mobileMenu">
         <a href="index.html">Dashboard</a>
         <a href="#reminders">Reminders</a>
       </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="main-content">
       <div class="auth-container">
         <div class="auth-card">
@@ -600,9 +617,12 @@
                 <input
                   type="email"
                   class="form-control"
+                  id="loginEmail"
+                  name="email"
                   placeholder="you@example.com"
                   required
                 />
+                <div class="error-message" id="loginEmailError"></div>
               </div>
 
               <div class="form-group">
@@ -610,14 +630,17 @@
                 <input
                   type="password"
                   class="form-control"
+                  id="loginPassword"
+                  name="password"
                   placeholder="Enter your password"
                   required
                 />
+                <div class="error-message" id="loginPasswordError"></div>
               </div>
 
               <a href="#" class="forgot-link">Forgot your password?</a>
 
-              <button type="submit" class="btn-submit">Sign In</button>
+              <button type="submit" class="btn-submit" id="loginBtn">Sign In</button>
 
               <div class="divider">
                 <span>or continue with</span>
@@ -641,9 +664,11 @@
                   <input
                     type="text"
                     class="form-control"
+                    id="signupFirstName"
                     placeholder="John"
                     required
                   />
+                  <div class="error-message" id="signupFirstNameError"></div>
                 </div>
 
                 <div class="form-group form-half">
@@ -651,9 +676,11 @@
                   <input
                     type="text"
                     class="form-control"
+                    id="signupLastName"
                     placeholder="Doe"
                     required
                   />
+                  <div class="error-message" id="signupLastNameError"></div>
                 </div>
               </div>
 
@@ -662,9 +689,11 @@
                 <input
                   type="email"
                   class="form-control"
+                  id="signupEmail"
                   placeholder="you@example.com"
                   required
                 />
+                <div class="error-message" id="signupEmailError"></div>
               </div>
 
               <div class="form-group">
@@ -672,12 +701,20 @@
                 <input
                   type="password"
                   class="form-control"
+                  id="signupPassword"
                   placeholder="Create a password"
                   required
                 />
+                <div class="password-strength" id="passwordStrength">
+                  <div class="strength-bar">
+                    <div class="strength-fill" id="strengthFill"></div>
+                  </div>
+                  <div class="strength-text" id="strengthText"></div>
+                </div>
+                <div class="error-message" id="signupPasswordError"></div>
               </div>
 
-              <button type="submit" class="btn-submit">Create Account</button>
+              <button type="submit" class="btn-submit" id="signupBtn">Create Account</button>
 
               <div class="divider">
                 <span>or continue with</span>
@@ -696,16 +733,10 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
-      const API_BASE = "https://hackathon-pflh.onrender.com";
-
       // Mobile menu toggle
-      const menuBtn = document.getElementById("menuBtn");
-      const mobileMenu = document.getElementById("mobileMenu");
-
-      menuBtn.addEventListener("click", () => {
-        mobileMenu.classList.toggle("open");
+      document.getElementById("menuBtn").addEventListener("click", () => {
+        document.getElementById("mobileMenu").classList.toggle("open");
       });
 
       // Tab Switching
@@ -719,62 +750,253 @@
         });
       });
 
-      // Signup
-      document.getElementById("signupForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const inputs = e.target.querySelectorAll("input");
-        const firstName = inputs[0].value;
-        const lastName = inputs[1].value;
-        const name = `${firstName} ${lastName}`;
-        const email = inputs[2].value;
-        const password = inputs[3].value;
+      // Validation Functions
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
 
-        try {
-          const res = await fetch(`${API_BASE}/users/signup`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, password }),
-          });
-          if (!res.ok) throw new Error("Signup failed");
-          alert("✅ Signup successful! Please login now.");
-          document.querySelector('[data-tab="signin"]').click();
-        } catch (err) {
-          alert("❌ Signup Error: " + err.message);
+      function validatePassword(password) {
+        return password.length >= 6;
+      }
+
+      function validateName(name) {
+        return name.trim().length >= 2;
+      }
+
+      function showError(inputId, errorId, message) {
+        const input = document.getElementById(inputId);
+        const error = document.getElementById(errorId);
+        input.classList.add('error');
+        input.classList.remove('success');
+        error.textContent = message;
+        error.classList.add('show');
+      }
+
+      function clearError(inputId, errorId) {
+        const input = document.getElementById(inputId);
+        const error = document.getElementById(errorId);
+        input.classList.remove('error');
+        input.classList.add('success');
+        error.classList.remove('show');
+      }
+
+      function checkPasswordStrength(password) {
+        const strengthBar = document.getElementById('passwordStrength');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthText');
+
+        if (password.length === 0) {
+          strengthBar.classList.remove('show');
+          return;
         }
+
+        strengthBar.classList.add('show');
+        
+        let strength = 0;
+        if (password.length >= 6) strength++;
+        if (password.length >= 10) strength++;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+        if (/\d/.test(password)) strength++;
+        if (/[^a-zA-Z\d]/.test(password)) strength++;
+
+        strengthFill.className = 'strength-fill';
+        
+        if (strength <= 2) {
+          strengthFill.classList.add('weak');
+          strengthText.textContent = 'Weak password';
+        } else if (strength <= 4) {
+          strengthFill.classList.add('medium');
+          strengthText.textContent = 'Medium password';
+        } else {
+          strengthFill.classList.add('strong');
+          strengthText.textContent = 'Strong password';
+        }
+      }
+
+      // Password strength checker
+      document.getElementById('signupPassword').addEventListener('input', (e) => {
+        checkPasswordStrength(e.target.value);
       });
 
-      // Login
+      // Login Form
       document.getElementById("loginForm").addEventListener("submit", async (e) => {
         e.preventDefault();
-        const inputs = e.target.querySelectorAll("input");
-        const email = inputs[0].value;
-        const password = inputs[1].value;
+        
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const loginBtn = document.getElementById('loginBtn');
+        
+        let hasError = false;
+
+        if (!validateEmail(email)) {
+          showError('loginEmail', 'loginEmailError', 'Please enter a valid email address');
+          hasError = true;
+        } else {
+          clearError('loginEmail', 'loginEmailError');
+        }
+
+        if (!validatePassword(password)) {
+          showError('loginPassword', 'loginPasswordError', 'Password must be at least 6 characters');
+          hasError = true;
+        } else {
+          clearError('loginPassword', 'loginPasswordError');
+        }
+
+        if (hasError) return;
+
+        loginBtn.disabled = true;
+        loginBtn.classList.add('loading');
+        const originalText = loginBtn.textContent;
+        loginBtn.textContent = '';
+
+        const formData = new URLSearchParams();
+        formData.append('email', email);
+        formData.append('password', password);
 
         try {
-          const res = await fetch(`${API_BASE}/users/login`, {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
+          const response = await fetch('/api/login', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData.toString(),
           });
 
-          if (!res.ok) throw new Error("Login failed");
+          if (response.redirected) {
+            window.location.href = response.url;
+            return;
+          }
 
-          alert("✅ Login successful!");
-          window.location.href = "index.html";
-        } catch (err) {
-          alert("❌ Login Error: " + err.message);
+          if (response.ok) {
+            window.location.href = '/';
+          } else {
+            const data = await response.json();
+            showError('loginPassword', 'loginPasswordError', data.detail || 'Login failed');
+          }
+        } catch (error) {
+          console.error('Login error:', error);
+          showError('loginPassword', 'loginPasswordError', 'Network error. Please try again.');
+        } finally {
+          loginBtn.disabled = false;
+          loginBtn.classList.remove('loading');
+          loginBtn.textContent = originalText;
         }
       });
 
-      // Google Login / Signup
+      // Signup Form
+      document.getElementById("signupForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const firstName = document.getElementById('signupFirstName').value.trim();
+        const lastName = document.getElementById('signupLastName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        const signupBtn = document.getElementById('signupBtn');
+
+        let hasError = false;
+
+        if (!validateName(firstName)) {
+          showError('signupFirstName', 'signupFirstNameError', 'First name must be at least 2 characters');
+          hasError = true;
+        } else {
+          clearError('signupFirstName', 'signupFirstNameError');
+        }
+
+        if (!validateName(lastName)) {
+          showError('signupLastName', 'signupLastNameError', 'Last name must be at least 2 characters');
+          hasError = true;
+        } else {
+          clearError('signupLastName', 'signupLastNameError');
+        }
+
+        if (!validateEmail(email)) {
+          showError('signupEmail', 'signupEmailError', 'Please enter a valid email address');
+          hasError = true;
+        } else {
+          clearError('signupEmail', 'signupEmailError');
+        }
+
+        if (!validatePassword(password)) {
+          showError('signupPassword', 'signupPasswordError', 'Password must be at least 6 characters');
+          hasError = true;
+        } else {
+          clearError('signupPassword', 'signupPasswordError');
+        }
+
+        if (hasError) return;
+
+        signupBtn.disabled = true;
+        signupBtn.classList.add('loading');
+        const originalText = signupBtn.textContent;
+        signupBtn.textContent = '';
+
+        const username = `${firstName} ${lastName}`;
+        const formData = new URLSearchParams();
+        formData.append('username', username);
+        formData.append('email', email);
+        formData.append('password', password);
+
+        try {
+          const response = await fetch('/api/register/', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData.toString(),
+          });
+
+          if (response.redirected) {
+            window.location.href = response.url;
+            return;
+          }
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.error) {
+              showError('signupEmail', 'signupEmailError', data.error);
+            } else {
+              window.location.href = '/info';
+            }
+          } else {
+            const data = await response.json();
+            showError('signupEmail', 'signupEmailError', data.detail || 'Registration failed');
+          }
+        } catch (error) {
+          console.error('Signup error:', error);
+          showError('signupEmail', 'signupEmailError', 'Network error. Please try again.');
+        } finally {
+          signupBtn.disabled = false;
+          signupBtn.classList.remove('loading');
+          signupBtn.textContent = originalText;
+        }
+      });
+
+      // Clear errors on input
+      ['loginEmail', 'loginPassword', 'signupFirstName', 'signupLastName', 'signupEmail', 'signupPassword'].forEach(fieldId => {
+        const input = document.getElementById(fieldId);
+        if (input) {
+          input.addEventListener('input', () => {
+            const errorId = fieldId + 'Error';
+            const errorElement = document.getElementById(errorId);
+            if (errorElement && errorElement.classList.contains('show')) {
+              input.classList.remove('error');
+              errorElement.classList.remove('show');
+            }
+          });
+        }
+      });
+
+      // Google Login handlers
       document.getElementById("googleLogin").addEventListener("click", (e) => {
         e.preventDefault();
-        window.location.href = `${API_BASE}/auth/google/login`;
+        alert("Google login integration pending");
       });
+
       document.getElementById("googleSignup").addEventListener("click", (e) => {
         e.preventDefault();
-        window.location.href = `${API_BASE}/auth/google/login`;
+        alert("Google signup integration pending");
       });
 
       // Canvas Animation
@@ -959,7 +1181,6 @@
         resizeCanvas();
       }
 
-      // Initialize canvas when page loads
       window.addEventListener("load", renderCanvas);
     </script>
   </body>

@@ -30,20 +30,21 @@ def getUser(email):
 def getUserForDashboard(userId):
     try:
         conn = createConnection()
-        cus = conn.cursor(dictionary=True)
-        query = "SELECT * FROM USERS WHERE userId = %s"
-        cus.execute(query, (userId,))
-        user = cus.fetchone()
-        user.pop("password", None)  # Remove password field
+        cus = conn.cursor(dictionary=True, buffered=True)
 
-        query2 = "SELECT * FROM ADDRESS WHERE userId = %s"
-        cus.execute(query2, (userId,))
+        cus.execute("SELECT * FROM USERS WHERE userId = %s", (userId,))
+        user = cus.fetchone()
+        if user:
+            user.pop("password", None)
+
+        cus.execute("SELECT * FROM ADDRESS WHERE userId = %s", (userId,))
         address = cus.fetchone()
-    
-        query3 = "SELECT * FROM remainders WHERE userId = %s"
-        cus.execute(query3, (userId,))
+
+        cus.execute("SELECT * FROM remainders WHERE userId = %s", (userId,))
         reminders = cus.fetchall()
+
         return {"user": user, "address": address, "reminders": reminders}
+
     except Exception as e:
         return {"error from database": str(e)}
 

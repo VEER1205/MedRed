@@ -181,8 +181,17 @@ async def getUserInfo(token: str = Cookie(None)):
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="Not authenticated - Invalid user data"
         )
-    user_info = db.getUserForDashboard(userId)
+    try:
+        user_info = db.getUserForDashboard(userId)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail=f"Error retrieving user info: {str(e)}"
+        )
+    # user_info = db.getUserForDashboard(userId)
     return user_info
+
+
 @router.get("/me")
 async def get_me(token: str = Cookie(None)):
     if not token:

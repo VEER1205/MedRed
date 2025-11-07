@@ -53,3 +53,5 @@ async def reminders(request: Request):
         return template.TemplateResponse("login.html", {"request": request, "error": "Please log in to access this page."})
     return template.TemplateResponse("reminder.html", {"request": request, "user": user})
 
+
+
